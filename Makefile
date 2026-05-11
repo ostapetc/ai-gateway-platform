@@ -1,4 +1,9 @@
-COMPOSE := docker compose -f deploy/local-dev/docker-compose.yml
+COMPOSE    := docker compose -f deploy/local-dev/docker-compose.yml
+KUBECTL    := kubectl
+K8S_DIR    := deploy/k8s
+NAMESPACE  := ai-gateway
+REGISTRY   := ghcr.io/ostapetc/ai-gateway-platform
+TAG        ?= latest
 
 # ── Dev environment ───────────────────────────────────────────────────────────
 
@@ -91,9 +96,41 @@ clean: ## Remove containers, volumes, and dev build artifacts
 	$(COMPOSE) down -v
 	find services -type d -name tmp | xargs rm -rf
 
+# ── Kubernetes ────────────────────────────────────────────────────────────────
+
+.PHONY: k8s-apply
+k8s-apply: ## Apply all Kubernetes manifests (namespace → infra → apps → ingress)
+	$(KUBECTL) apply -f $(K8S_DIR)/namespace.yaml
+	$(KUBECTL) apply -f $(K8S_DIR)/infra/
+	$(KUBECTL) apply -f $(K8S_DIR)/apps/
+	$(KUBECTL) apply -f $(K8S_DIR)/ingress.yaml
+
+.PHONY: k8s-delete
+k8s-delete: ## Delete all Kubernetes resources in the namespace
+	$(KUBECTL) delete namespace $(NAMESPACE) --ignore-not-found
+
+.PHONY: k8s-status
+k8s-status: ## Show pod and service status
+	$(KUBECTL) get pods,svc,ingress -n $(NAMESPACE)
+
+.PHONY: k8s-logs
+k8s-logs: ## Tail logs for a service: make k8s-logs SVC=users
+	$(KUBECTL) logs -n $(NAMESPACE) -l app=$(SVC) -f
+
+.PHONY: docker-push
+docker-push: ## Build and push production images to registry
+	docker build -t $(REGISTRY)/users:$(TAG)    services/users
+	docker build -t $(REGISTRY)/posts:$(TAG)    services/posts
+	docker build -t $(REGISTRY)/comments:$(TAG) services/comments
+	docker push $(REGISTRY)/users:$(TAG)
+	docker push $(REGISTRY)/posts:$(TAG)
+	docker push $(REGISTRY)/comments:$(TAG)
+
+# ── Help ──────────────────────────────────────────────────────────────────────
+
 .PHONY: help
 help: ## Show this help
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
 .DEFAULT_GOAL := help
