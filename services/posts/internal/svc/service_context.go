@@ -14,8 +14,12 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	postStore := store.NewPostStore()
+	postStore.Add(1, "Title for the first Post", "Content for the first Post.")
+	postStore.Add(2, "Title for the second Post", "Content for the second Post.")
+
 	return &ServiceContext{
 		Config:    c,
-		PostStore: store.NewPostStore(),
+		PostStore: postStore,
 	}
 }
