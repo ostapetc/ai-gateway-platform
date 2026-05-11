@@ -2,7 +2,7 @@
 // goctl 1.9.2
 // Source: service.proto
 
-package commentsclient
+package main
 
 import (
 	"context"

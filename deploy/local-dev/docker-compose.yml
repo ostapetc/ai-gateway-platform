@@ -136,3 +136,20 @@ services:
         condition: service_healthy
       nats:
         condition: service_healthy
+
+  comments:
+    build:
+      context: ../../services/comments
+      dockerfile: Dockerfile
+    ports:
+      - "8883:8883"   # gRPC
+      - "8884:8884"   # HTTP
+    networks:
+      - platform
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_healthy

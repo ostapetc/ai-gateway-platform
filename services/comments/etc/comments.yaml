@@ -1,6 +1,7 @@
 Name: comments.rpc
-ListenOn: 0.0.0.0:8080
-#Etcd:
-#  Hosts:
-#  - 127.0.0.1:2379
-#  Key: comments.rpc
+ListenOn: 0.0.0.0:8883
+
+RestConf:
+  Name: comments-api
+  Host: 0.0.0.0
+  Port: 8884

@@ -24,7 +24,18 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 }
 
 func (l *ListLogic) List(in *comments.ListRequest) (*comments.ListResponse, error) {
-	// todo: add your logic here and delete this line
+	items := l.svcCtx.CommentStore.ListByPostID(in.PostID)
 
-	return &comments.ListResponse{}, nil
+	result := make([]*comments.Comment, len(items))
+	for i, c := range items {
+		result[i] = &comments.Comment{
+			Id:        c.ID,
+			UserId:    c.UserID,
+			PostId:    c.PostID,
+			Body:      c.Body,
+			CreatedAt: c.CreatedAt,
+		}
+	}
+
+	return &comments.ListResponse{Comments: result}, nil
 }

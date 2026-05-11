@@ -24,7 +24,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 }
 
 func (l *CreateLogic) Create(in *comments.CreateRequest) (*comments.CreateResponse, error) {
-	// todo: add your logic here and delete this line
+	c := l.svcCtx.CommentStore.Add(in.UserId, in.PostId, in.Body)
 
-	return &comments.CreateResponse{}, nil
+	return &comments.CreateResponse{Id: c.ID}, nil
 }
