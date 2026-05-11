@@ -1,0 +1,55 @@
+# Image: build with `docker build -t ghcr.io/ostapetc/ai-gateway-platform/posts:latest services/posts`
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts
+  namespace: ai-gateway
+  labels:
+    app: posts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: posts
+  template:
+    metadata:
+      labels:
+        app: posts
+    spec:
+      containers:
+        - name: posts
+          image: ghcr.io/ostapetc/ai-gateway-platform/posts:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8882
+          readinessProbe:
+            tcpSocket:
+              port: 8882
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8882
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts
+  namespace: ai-gateway
+spec:
+  selector:
+    app: posts
+  ports:
+    - name: http
+      port: 8882
+      targetPort: 8882

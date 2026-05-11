@@ -1,0 +1,60 @@
+# Image: build with `docker build -t ghcr.io/ostapetc/ai-gateway-platform/comments:latest services/comments`
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comments
+  namespace: ai-gateway
+  labels:
+    app: comments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comments
+  template:
+    metadata:
+      labels:
+        app: comments
+    spec:
+      containers:
+        - name: comments
+          image: ghcr.io/ostapetc/ai-gateway-platform/comments:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: grpc
+              containerPort: 8883
+            - name: http
+              containerPort: 8884
+          readinessProbe:
+            tcpSocket:
+              port: 8884
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8884
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments
+  namespace: ai-gateway
+spec:
+  selector:
+    app: comments
+  ports:
+    - name: grpc
+      port: 8883
+      targetPort: 8883
+    - name: http
+      port: 8884
+      targetPort: 8884

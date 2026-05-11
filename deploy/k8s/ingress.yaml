@@ -1,0 +1,80 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ai-gateway
+  namespace: ai-gateway
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /users
+            pathType: Prefix
+            backend:
+              service:
+                name: users
+                port:
+                  number: 8881
+
+          - path: /posts
+            pathType: Prefix
+            backend:
+              service:
+                name: posts
+                port:
+                  number: 8882
+
+          - path: /comments
+            pathType: Prefix
+            backend:
+              service:
+                name: comments
+                port:
+                  number: 8884
+
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
+
+          - path: /prometheus
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus
+                port:
+                  number: 9090
+---
+# gRPC ingress for comments — requires HTTP/2 and a TLS termination point.
+# Expose separately or access via ClusterIP within the cluster at comments:8883.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ai-gateway-grpc
+  namespace: ai-gateway
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - ai-gateway.local
+      secretName: ai-gateway-tls
+  rules:
+    - host: ai-gateway.local
+      http:
+        paths:
+          - path: /comments
+            pathType: Prefix
+            backend:
+              service:
+                name: comments
+                port:
+                  number: 8883
