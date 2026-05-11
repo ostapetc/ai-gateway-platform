@@ -3,7 +3,7 @@ KUBECONFIG := $(HOME)/.kube/timeweb_config.yaml
 KUBECTL    := kubectl --kubeconfig $(KUBECONFIG)
 K8S_DIR    := deploy/k8s
 NAMESPACE  := ai-gateway
-REGISTRY   := ghcr.io/ostapetc/ai-gateway-platform
+REGISTRY   ?= freelikeatruth
 TAG        ?= latest
 
 # ── Dev environment ───────────────────────────────────────────────────────────
@@ -118,14 +118,25 @@ k8s-status: ## Show pod and service status
 k8s-logs: ## Tail logs for a service: make k8s-logs SVC=users
 	$(KUBECTL) logs -n $(NAMESPACE) -l app=$(SVC) -f
 
+.PHONY: docker-login
+docker-login: ## Log in to Docker Hub using .env credentials
+	@set -a && . ./.env && set +a && \
+		echo "$$DOCKER_PASSWORD" | docker login -u "$$DOCKER_USER" --password-stdin
+
 .PHONY: docker-push
-docker-push: ## Build and push production images to registry
+docker-push: ## Build and push production images: make docker-push [REGISTRY=ostapetc] [TAG=latest]
 	docker build -t $(REGISTRY)/users:$(TAG)    services/users
 	docker build -t $(REGISTRY)/posts:$(TAG)    services/posts
 	docker build -t $(REGISTRY)/comments:$(TAG) services/comments
 	docker push $(REGISTRY)/users:$(TAG)
 	docker push $(REGISTRY)/posts:$(TAG)
 	docker push $(REGISTRY)/comments:$(TAG)
+
+.PHONY: k8s-set-images
+k8s-set-images: ## Update k8s deployments to use current REGISTRY/TAG
+	$(KUBECTL) set image deployment/users    users=$(REGISTRY)/users:$(TAG)    -n $(NAMESPACE)
+	$(KUBECTL) set image deployment/posts    posts=$(REGISTRY)/posts:$(TAG)    -n $(NAMESPACE)
+	$(KUBECTL) set image deployment/comments comments=$(REGISTRY)/comments:$(TAG) -n $(NAMESPACE)
 
 # ── Help ──────────────────────────────────────────────────────────────────────
 

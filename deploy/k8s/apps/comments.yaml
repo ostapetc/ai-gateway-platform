@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: comments
-          image: ghcr.io/ostapetc/ai-gateway-platform/comments:latest
+          image: freelikeatruth/comments:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: grpc
