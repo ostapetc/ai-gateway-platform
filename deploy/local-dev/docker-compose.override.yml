@@ -1,0 +1,27 @@
+volumes:
+  gomodcache:
+
+services:
+  users:
+    build:
+      context: ../../services/users
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ../../services/users:/app
+      - gomodcache:/go/pkg/mod
+
+  posts:
+    build:
+      context: ../../services/posts
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ../../services/posts:/app
+      - gomodcache:/go/pkg/mod
+
+  comments:
+    build:
+      context: ../../services/comments
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ../../services/comments:/app
+      - gomodcache:/go/pkg/mod
