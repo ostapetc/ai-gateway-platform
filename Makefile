@@ -1,5 +1,6 @@
 COMPOSE    := docker compose -f deploy/local-dev/docker-compose.yml
-KUBECTL    := kubectl
+KUBECONFIG := $(HOME)/.kube/timeweb_config.yaml
+KUBECTL    := kubectl --kubeconfig $(KUBECONFIG)
 K8S_DIR    := deploy/k8s
 NAMESPACE  := ai-gateway
 REGISTRY   := ghcr.io/ostapetc/ai-gateway-platform
