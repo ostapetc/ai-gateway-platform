@@ -44,6 +44,18 @@ logs-comments: ## Tail comments service logs
 ps: ## Show running containers and ports
 	$(COMPOSE) ps
 
+.PHONY: endpoints
+endpoints: ## Print all HTTP endpoints (docker-compose)
+	@printf "\n  Docker Compose HTTP Endpoints\n\n"
+	@printf "  \033[36m%-14s\033[0m %s\n" "users"       "http://localhost:8881"
+	@printf "  \033[36m%-14s\033[0m %s\n" "posts"       "http://localhost:8882"
+	@printf "  \033[36m%-14s\033[0m %s\n" "comments"    "http://localhost:8884"
+	@printf "  \033[36m%-14s\033[0m %s\n" "grafana"     "http://localhost:3000"
+	@printf "  \033[36m%-14s\033[0m %s\n" "prometheus"  "http://localhost:9090"
+	@printf "  \033[36m%-14s\033[0m %s\n" "nats-mon"    "http://localhost:8222"
+	@printf "  \033[36m%-14s\033[0m %s\n" "otel-zpages" "http://localhost:55679"
+	@printf "\n"
+
 # ── Build & test ──────────────────────────────────────────────────────────────
 
 .PHONY: build
@@ -125,6 +137,22 @@ k8s-delete: ## Delete all Kubernetes resources in the namespace
 .PHONY: k8s-status
 k8s-status: ## Show pod and service status
 	$(KUBECTL) get pods,svc,ingress -n $(NAMESPACE)
+
+.PHONY: k8s-endpoints
+k8s-endpoints: ## Print all HTTP endpoints (k8s ingress)
+	@HOST=$$($(KUBECTL) get ingress ai-gateway -n $(NAMESPACE) \
+		-o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null); \
+	if [ -z "$$HOST" ]; then \
+		printf "\n  Ingress has no external IP/hostname yet — is the ingress controller running?\n\n"; \
+	else \
+		printf "\n  Kubernetes HTTP Endpoints  (host: $$HOST)\n\n"; \
+		printf "  \033[36m%-14s\033[0m %s\n" "users"      "http://$$HOST/users"; \
+		printf "  \033[36m%-14s\033[0m %s\n" "posts"      "http://$$HOST/posts"; \
+		printf "  \033[36m%-14s\033[0m %s\n" "comments"   "http://$$HOST/comments"; \
+		printf "  \033[36m%-14s\033[0m %s\n" "grafana"    "http://$$HOST/grafana"; \
+		printf "  \033[36m%-14s\033[0m %s\n" "prometheus" "http://$$HOST/prometheus"; \
+		printf "\n"; \
+	fi
 
 .PHONY: k8s-logs
 k8s-logs: ## Tail logs for a service: make k8s-logs SVC=users
