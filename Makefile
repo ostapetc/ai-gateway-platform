@@ -56,6 +56,18 @@ test: ## Run tests for all services
 	cd services/posts    && go test ./...
 	cd services/comments && go test ./...
 
+.PHONY: fmt
+fmt: ## Run gofmt on all services
+	gofmt -w services/users/...
+	gofmt -w services/posts/...
+	gofmt -w services/comments/...
+
+.PHONY: vet
+vet: ## Run go vet on all services
+	cd services/users    && go vet ./...
+	cd services/posts    && go vet ./...
+	cd services/comments && go vet ./...
+
 .PHONY: lint
 lint: ## Run golangci-lint on all services
 	cd services/users    && golangci-lint run ./...
@@ -137,6 +149,21 @@ k8s-set-images: ## Update k8s deployments to use current REGISTRY/TAG
 	$(KUBECTL) set image deployment/users    users=$(REGISTRY)/users:$(TAG)    -n $(NAMESPACE)
 	$(KUBECTL) set image deployment/posts    posts=$(REGISTRY)/posts:$(TAG)    -n $(NAMESPACE)
 	$(KUBECTL) set image deployment/comments comments=$(REGISTRY)/comments:$(TAG) -n $(NAMESPACE)
+
+.PHONY: k8s-rollout
+k8s-rollout: ## Wait for all app deployments to finish rolling out
+	$(KUBECTL) rollout status deployment/users    -n $(NAMESPACE)
+	$(KUBECTL) rollout status deployment/posts    -n $(NAMESPACE)
+	$(KUBECTL) rollout status deployment/comments -n $(NAMESPACE)
+
+.PHONY: k8s-restart
+k8s-restart: ## Rolling restart of app pods (no image change needed)
+	$(KUBECTL) rollout restart deployment/users    -n $(NAMESPACE)
+	$(KUBECTL) rollout restart deployment/posts    -n $(NAMESPACE)
+	$(KUBECTL) rollout restart deployment/comments -n $(NAMESPACE)
+
+.PHONY: deploy
+deploy: docker-push k8s-set-images k8s-rollout ## Full deploy: build → push → update k8s → wait for rollout
 
 # ── Help ──────────────────────────────────────────────────────────────────────
 
