@@ -42,19 +42,3 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: comments
-  namespace: ai-gateway
-spec:
-  selector:
-    app: comments
-  ports:
-    - name: grpc
-      port: 8883
-      targetPort: 8883
-    - name: http
-      port: 8884
-      targetPort: 8884

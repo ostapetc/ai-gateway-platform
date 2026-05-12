@@ -40,16 +40,3 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: users
-  namespace: ai-gateway
-spec:
-  selector:
-    app: users
-  ports:
-    - name: http
-      port: 8881
-      targetPort: 8881
