@@ -126,7 +126,8 @@ services:
       context: ../../services/posts
       dockerfile: Dockerfile
     ports:
-      - "8882:8882"
+      - "8885:8885"   # gRPC
+      - "8882:8882"   # HTTP
     networks:
       - platform
     depends_on:

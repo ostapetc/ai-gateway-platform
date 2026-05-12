@@ -1,18 +1,21 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.9.2
-
 package main
 
 import (
 	"flag"
 	"fmt"
 
+	"github.com/ostapetc/ai-gateway-platform/services/posts/grpc/posts"
 	"github.com/ostapetc/ai-gateway-platform/services/posts/internal/config"
 	"github.com/ostapetc/ai-gateway-platform/services/posts/internal/handler"
+	"github.com/ostapetc/ai-gateway-platform/services/posts/internal/server"
 	"github.com/ostapetc/ai-gateway-platform/services/posts/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/zrpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 var configFile = flag.String("f", "etc/posts-api.yaml", "the config file")
@@ -22,13 +25,27 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-
-	server := rest.MustNewServer(c.RestConf)
-	defer server.Stop()
-
 	ctx := svc.NewServiceContext(c)
-	handler.RegisterHandlers(server, ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
-	server.Start()
+	grpcServer := zrpc.MustNewServer(c.RpcServerConf, func(s *grpc.Server) {
+		posts.RegisterPostsServer(s, server.NewPostsServer(ctx))
+
+		if c.Mode == service.DevMode || c.Mode == service.TestMode {
+			reflection.Register(s)
+		}
+	})
+
+	restServer := rest.MustNewServer(c.RestConf)
+	handler.RegisterHandlers(restServer, ctx)
+
+	group := service.NewServiceGroup()
+	defer group.Stop()
+
+	group.Add(grpcServer)
+	group.Add(restServer)
+
+	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
+	fmt.Printf("Starting rest server at %s:%d...\n", c.RestConf.Host, c.RestConf.Port)
+
+	group.Start()
 }

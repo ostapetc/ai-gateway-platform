@@ -1,3 +1,7 @@
-Name: posts-api
-Host: 0.0.0.0
-Port: 8882
+Name: posts.rpc
+ListenOn: 0.0.0.0:8885
+
+RestConf:
+  Name: posts-api
+  Host: 0.0.0.0
+  Port: 8882
