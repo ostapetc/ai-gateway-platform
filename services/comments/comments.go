@@ -46,5 +46,6 @@ func main() {
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	fmt.Printf("Starting rest server at %s:%d...\n", c.RestConf.Host, c.RestConf.Port)
+
 	group.Start()
 }
