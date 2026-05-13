@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: posts-bot-printtime
+  name: posts-bot-cronjob
   namespace: ai-gateway
 spec:
   schedule: "* * * * *"

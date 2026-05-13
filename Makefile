@@ -169,18 +169,18 @@ docker-login: ## Log in to Docker Hub using .env credentials
 docker-push: ## Build and push production images: make docker-push [REGISTRY=ostapetc] [TAG=latest]
 	docker build -t $(REGISTRY)/users:$(TAG)     services/users
 	docker build -t $(REGISTRY)/posts:$(TAG)     services/posts
-	docker build -t $(REGISTRY)/posts-bot:$(TAG) services/posts-bot-cronjob
+	docker build -t $(REGISTRY)/posts-bot-cronjob:$(TAG) services/posts-bot-cronjob
 	docker build -t $(REGISTRY)/comments:$(TAG)  services/comments
 	docker push $(REGISTRY)/users:$(TAG)
 	docker push $(REGISTRY)/posts:$(TAG)
-	docker push $(REGISTRY)/posts-bot:$(TAG)
+	docker push $(REGISTRY)/posts-bot-cronjob:$(TAG)
 	docker push $(REGISTRY)/comments:$(TAG)
 
 .PHONY: k8s-set-images
 k8s-set-images: ## Update k8s deployments to use current REGISTRY/TAG
 	$(KUBECTL) set image deployment/users    users=$(REGISTRY)/users:$(TAG)       -n $(NAMESPACE)
 	$(KUBECTL) set image deployment/posts    posts=$(REGISTRY)/posts:$(TAG)       -n $(NAMESPACE)
-	$(KUBECTL) set image cronjob/posts-bot-printtime printtime=$(REGISTRY)/posts-bot:$(TAG) -n $(NAMESPACE)
+	$(KUBECTL) set image cronjob/posts-bot-cronjob printtime=$(REGISTRY)/posts-bot-cronjob:$(TAG) -n $(NAMESPACE)
 	$(KUBECTL) set image deployment/comments comments=$(REGISTRY)/comments:$(TAG) -n $(NAMESPACE)
 
 .PHONY: k8s-rollout
