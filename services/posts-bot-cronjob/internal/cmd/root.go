@@ -20,23 +20,23 @@ var (
 		Short: "exec cron job",
 	}
 
-	printTimeJob = &cobra.Command{
-		Use:   "printtime",
-		Short: "print current time",
-		RunE:  logic.PrintTime,
+	createPostsJob = &cobra.Command{
+		Use:   "createposts",
+		Short: "create a random post via posts gRPC service",
+		RunE:  logic.CreatePosts,
 	}
 )
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
+		os.Exit(codeFailure)
 	}
 }
 
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&confPath, "config", "etc/cron.yaml", "config file")
-	rootCmd.AddCommand(printTimeJob)
+	rootCmd.AddCommand(createPostsJob)
 }
 
 func initConfig() {

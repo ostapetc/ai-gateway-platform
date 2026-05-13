@@ -127,10 +127,10 @@ clean: ## Remove containers, volumes, and dev build artifacts
 .PHONY: k8s-apply
 k8s-apply: ## Apply all Kubernetes manifests (namespace → infra → apps → cronjobs → ingress)
 	$(KUBECTL) apply -f $(K8S_DIR)/namespace.yaml
-	$(KUBECTL) apply -f $(K8S_DIR)/infra/
-	$(KUBECTL) apply -f $(K8S_DIR)/apps/
-	$(KUBECTL) apply -f $(K8S_DIR)/cronjobs/
-	$(KUBECTL) apply -f $(K8S_DIR)/ingress.yaml
+	$(KUBECTL) apply -R -f $(K8S_DIR)/infra/
+	$(KUBECTL) apply -R -f $(K8S_DIR)/apps/
+	$(KUBECTL) apply -R -f $(K8S_DIR)/cronjobs/
+	$(KUBECTL) apply -R -f $(K8S_DIR)/ingress/
 
 .PHONY: k8s-delete
 k8s-delete: ## Delete all Kubernetes resources in the namespace

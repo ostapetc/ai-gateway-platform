@@ -1,1 +1,3 @@
 name: posts-bot
+PostsRpc:
+  Target: localhost:8081
