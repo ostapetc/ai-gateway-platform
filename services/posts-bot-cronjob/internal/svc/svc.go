@@ -1,6 +1,6 @@
 package svc
 
-import "github.com/ostapetc/ai-gateway-platform/services/posts/jobs/bot/internal/config"
+import "github.com/ostapetc/ai-gateway-platform/services/posts-bot-cronjob/internal/config"
 
 var svcCtx *ServiceContext
 

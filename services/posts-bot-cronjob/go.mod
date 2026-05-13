@@ -1,4 +1,4 @@
-module github.com/ostapetc/ai-gateway-platform/services/posts/jobs/bot
+module github.com/ostapetc/ai-gateway-platform/services/posts-bot-cronjob
 
 go 1.24.0
 

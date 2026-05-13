@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: posts-bot-printtime
+  namespace: ai-gateway
 spec:
   schedule: "* * * * *"
   concurrencyPolicy: Forbid
@@ -11,7 +12,8 @@ spec:
         spec:
           containers:
             - name: printtime
-              image: posts-bot:latest
+              image: freelikeatruth/posts-bot:latest
+              imagePullPolicy: IfNotPresent
               args:
                 - printtime
           restartPolicy: OnFailure

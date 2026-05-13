@@ -88,9 +88,10 @@ lint: ## Run golangci-lint on all services
 
 .PHONY: tidy
 tidy: ## Run go mod tidy on all services
-	cd services/users    && go mod tidy
-	cd services/posts    && go mod tidy
-	cd services/comments && go mod tidy
+	cd services/users           && go mod tidy
+	cd services/posts           && go mod tidy
+	cd services/posts-bot-cronjob  && go mod tidy
+	cd services/comments        && go mod tidy
 
 # ── Infrastructure ────────────────────────────────────────────────────────────
 
@@ -124,10 +125,11 @@ clean: ## Remove containers, volumes, and dev build artifacts
 # ── Kubernetes ────────────────────────────────────────────────────────────────
 
 .PHONY: k8s-apply
-k8s-apply: ## Apply all Kubernetes manifests (namespace → infra → apps → ingress)
+k8s-apply: ## Apply all Kubernetes manifests (namespace → infra → apps → cronjobs → ingress)
 	$(KUBECTL) apply -f $(K8S_DIR)/namespace.yaml
 	$(KUBECTL) apply -f $(K8S_DIR)/infra/
 	$(KUBECTL) apply -f $(K8S_DIR)/apps/
+	$(KUBECTL) apply -f $(K8S_DIR)/cronjobs/
 	$(KUBECTL) apply -f $(K8S_DIR)/ingress.yaml
 
 .PHONY: k8s-delete
@@ -165,17 +167,20 @@ docker-login: ## Log in to Docker Hub using .env credentials
 
 .PHONY: docker-push
 docker-push: ## Build and push production images: make docker-push [REGISTRY=ostapetc] [TAG=latest]
-	docker build -t $(REGISTRY)/users:$(TAG)    services/users
-	docker build -t $(REGISTRY)/posts:$(TAG)    services/posts
-	docker build -t $(REGISTRY)/comments:$(TAG) services/comments
+	docker build -t $(REGISTRY)/users:$(TAG)     services/users
+	docker build -t $(REGISTRY)/posts:$(TAG)     services/posts
+	docker build -t $(REGISTRY)/posts-bot:$(TAG) services/posts-bot-cronjob
+	docker build -t $(REGISTRY)/comments:$(TAG)  services/comments
 	docker push $(REGISTRY)/users:$(TAG)
 	docker push $(REGISTRY)/posts:$(TAG)
+	docker push $(REGISTRY)/posts-bot:$(TAG)
 	docker push $(REGISTRY)/comments:$(TAG)
 
 .PHONY: k8s-set-images
 k8s-set-images: ## Update k8s deployments to use current REGISTRY/TAG
-	$(KUBECTL) set image deployment/users    users=$(REGISTRY)/users:$(TAG)    -n $(NAMESPACE)
-	$(KUBECTL) set image deployment/posts    posts=$(REGISTRY)/posts:$(TAG)    -n $(NAMESPACE)
+	$(KUBECTL) set image deployment/users    users=$(REGISTRY)/users:$(TAG)       -n $(NAMESPACE)
+	$(KUBECTL) set image deployment/posts    posts=$(REGISTRY)/posts:$(TAG)       -n $(NAMESPACE)
+	$(KUBECTL) set image cronjob/posts-bot-printtime printtime=$(REGISTRY)/posts-bot:$(TAG) -n $(NAMESPACE)
 	$(KUBECTL) set image deployment/comments comments=$(REGISTRY)/comments:$(TAG) -n $(NAMESPACE)
 
 .PHONY: k8s-rollout

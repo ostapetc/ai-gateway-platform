@@ -3,9 +3,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/ostapetc/ai-gateway-platform/services/posts/jobs/bot/internal/config"
-	"github.com/ostapetc/ai-gateway-platform/services/posts/jobs/bot/internal/logic"
-	"github.com/ostapetc/ai-gateway-platform/services/posts/jobs/bot/internal/svc"
+	"github.com/ostapetc/ai-gateway-platform/services/posts-bot-cronjob/internal/config"
+	"github.com/ostapetc/ai-gateway-platform/services/posts-bot-cronjob/internal/logic"
+	"github.com/ostapetc/ai-gateway-platform/services/posts-bot-cronjob/internal/svc"
 	"github.com/spf13/cobra"
 	"github.com/zeromicro/go-zero/core/conf"
 )
