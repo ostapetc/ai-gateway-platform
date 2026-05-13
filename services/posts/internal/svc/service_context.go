@@ -19,6 +19,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	postStore.Add(2, "Title for the second Post", "Content for the second Post.")
 	postStore.Add(3, "Title for the third Post", "Content for the third Post.")
 	postStore.Add(4, "Title for the fourth Post", "Content for the fourth Post.")
+	postStore.Add(5, "Title for the fifth Post", "Content for the fifth Post.")
 
 	return &ServiceContext{
 		Config:    c,
