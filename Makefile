@@ -169,7 +169,7 @@ docker-login: ## Log in to Docker Hub using .env credentials
 docker-push: ## Build and push production images: make docker-push [REGISTRY=ostapetc] [TAG=latest]
 	docker build -t $(REGISTRY)/users:$(TAG)     services/users
 	docker build -t $(REGISTRY)/posts:$(TAG)     services/posts
-	docker build -t $(REGISTRY)/posts-bot-cronjob:$(TAG) services/posts-bot-cronjob
+	@tmp=$$(mktemp -d) && cp -rL services/posts-bot-cronjob/. $$tmp/ && docker build -t $(REGISTRY)/posts-bot-cronjob:$(TAG) $$tmp; rc=$$?; rm -rf $$tmp; exit $$rc
 	docker build -t $(REGISTRY)/comments:$(TAG)  services/comments
 	docker push $(REGISTRY)/users:$(TAG)
 	docker push $(REGISTRY)/posts:$(TAG)

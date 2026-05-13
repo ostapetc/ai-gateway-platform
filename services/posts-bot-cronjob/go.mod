@@ -8,7 +8,7 @@ require (
 	github.com/zeromicro/go-zero v1.10.1
 )
 
-replace github.com/ostapetc/ai-gateway-platform/services/posts => ../posts
+replace github.com/ostapetc/ai-gateway-platform/services/posts => ./posts
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
