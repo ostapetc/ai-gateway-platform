@@ -12,7 +12,7 @@ spec:
         spec:
           containers:
             - name: printtime
-              image: freelikeatruth/posts-bot:latest
+              image: freelikeatruth/posts-bot-cronjob:latest
               imagePullPolicy: IfNotPresent
               args:
                 - printtime
