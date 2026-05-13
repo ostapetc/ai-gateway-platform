@@ -11,9 +11,9 @@ spec:
       template:
         spec:
           containers:
-            - name: printtime
+            - name: posts-bot
               image: freelikeatruth/posts-bot-cronjob:latest
               imagePullPolicy: IfNotPresent
               args:
-                - printtime
+                - createposts
           restartPolicy: OnFailure
