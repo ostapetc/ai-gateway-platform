@@ -1,3 +1,6 @@
 name: posts-bot
 PostsRpc:
-  Target: posts.ai-gateway:8885
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: posts.rpc
