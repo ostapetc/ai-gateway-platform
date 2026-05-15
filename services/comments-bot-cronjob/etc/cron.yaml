@@ -1,0 +1,6 @@
+name: comments-bot
+CommentsRpc:
+  Etcd:
+    Hosts:
+      - ${ETCD_ADDRESS}
+    Key: comments.rpc
