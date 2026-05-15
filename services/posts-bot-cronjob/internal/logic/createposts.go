@@ -32,19 +32,9 @@ func CreatePosts(_ *cobra.Command, _ []string) error {
 }
 
 func generateTitle() string {
-	for {
-		s := gofakeit.Sentence(rand.IntN(4) + 5)
-		if len(s) > 50 {
-			return s
-		}
-	}
+	return gofakeit.Sentence(rand.IntN(4) + 5)
 }
 
 func generateBody() string {
-	for {
-		s := gofakeit.Paragraph(1, rand.IntN(3)+2, rand.IntN(5)+5, " ")
-		if len(s) > 300 {
-			return s
-		}
-	}
+	return gofakeit.Paragraph(1, rand.IntN(3)+2, rand.IntN(5)+5, " ")
 }
