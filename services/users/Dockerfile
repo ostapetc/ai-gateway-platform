@@ -2,13 +2,13 @@ FROM golang:1.24-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o users .
+COPY services/users/ services/users/
+RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o users ./services/users
 
 FROM alpine:3.20
 RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
 COPY --from=builder /app/users .
-COPY etc/ etc/
+COPY services/users/etc/ etc/
 EXPOSE 8881
 CMD ["./users"]

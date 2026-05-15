@@ -1,8 +1,9 @@
-module github.com/ostapetc/ai-gateway-platform/services/comments
+module github.com/ostapetc/ai-gateway-platform
 
 go 1.24.0
 
 require (
+	github.com/spf13/cobra v1.8.1
 	github.com/zeromicro/go-zero v1.10.1
 	google.golang.org/grpc v1.79.3
 	google.golang.org/protobuf v1.36.11
@@ -33,6 +34,7 @@ require (
 	github.com/grafana/pyroscope-go v1.2.8 // indirect
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.9 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.7 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
@@ -52,6 +54,7 @@ require (
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/redis/go-redis/v9 v9.18.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
+	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/titanous/json5 v1.0.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.21 // indirect

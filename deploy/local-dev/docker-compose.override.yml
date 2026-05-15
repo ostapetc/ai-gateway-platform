@@ -4,24 +4,27 @@ volumes:
 services:
   users:
     build:
-      context: ../../services/users
-      dockerfile: Dockerfile.dev
+      context: ../..
+      dockerfile: services/users/Dockerfile.dev
+    working_dir: /app/services/users
     volumes:
-      - ../../services/users:/app
+      - ../../:/app
       - gomodcache:/go/pkg/mod
 
   posts:
     build:
-      context: ../../services/posts
-      dockerfile: Dockerfile.dev
+      context: ../..
+      dockerfile: services/posts/Dockerfile.dev
+    working_dir: /app/services/posts
     volumes:
-      - ../../services/posts:/app
+      - ../../:/app
       - gomodcache:/go/pkg/mod
 
   comments:
     build:
-      context: ../../services/comments
-      dockerfile: Dockerfile.dev
+      context: ../..
+      dockerfile: services/comments/Dockerfile.dev
+    working_dir: /app/services/comments
     volumes:
-      - ../../services/comments:/app
+      - ../../:/app
       - gomodcache:/go/pkg/mod

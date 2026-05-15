@@ -64,34 +64,23 @@ build: ## Build all services (production images)
 
 .PHONY: test
 test: ## Run tests for all services
-	cd services/users    && go test ./...
-	cd services/posts    && go test ./...
-	cd services/comments && go test ./...
+	go test ./services/...
 
 .PHONY: fmt
 fmt: ## Run gofmt on all services
-	gofmt -w services/users/...
-	gofmt -w services/posts/...
-	gofmt -w services/comments/...
+	gofmt -w services/
 
 .PHONY: vet
 vet: ## Run go vet on all services
-	cd services/users    && go vet ./...
-	cd services/posts    && go vet ./...
-	cd services/comments && go vet ./...
+	go vet ./services/...
 
 .PHONY: lint
 lint: ## Run golangci-lint on all services
-	cd services/users    && golangci-lint run ./...
-	cd services/posts    && golangci-lint run ./...
-	cd services/comments && golangci-lint run ./...
+	golangci-lint run ./services/...
 
 .PHONY: tidy
-tidy: ## Run go mod tidy on all services
-	cd services/users           && go mod tidy
-	cd services/posts           && go mod tidy
-	cd services/posts-bot-cronjob  && go mod tidy
-	cd services/comments        && go mod tidy
+tidy: ## Run go mod tidy
+	go mod tidy
 
 # ── Infrastructure ────────────────────────────────────────────────────────────
 
@@ -167,10 +156,10 @@ docker-login: ## Log in to Docker Hub using .env credentials
 
 .PHONY: docker-push
 docker-push: ## Build and push production images: make docker-push [REGISTRY=ostapetc] [TAG=latest]
-	docker build -t $(REGISTRY)/users:$(TAG)     services/users
-	docker build -t $(REGISTRY)/posts:$(TAG)     services/posts
-	@tmp=$$(mktemp -d) && cp -rL services/posts-bot-cronjob/. $$tmp/ && docker build -t $(REGISTRY)/posts-bot-cronjob:$(TAG) $$tmp; rc=$$?; rm -rf $$tmp; exit $$rc
-	docker build -t $(REGISTRY)/comments:$(TAG)  services/comments
+	docker build -f services/users/Dockerfile          -t $(REGISTRY)/users:$(TAG)            .
+	docker build -f services/posts/Dockerfile          -t $(REGISTRY)/posts:$(TAG)            .
+	docker build -f services/posts-bot-cronjob/Dockerfile -t $(REGISTRY)/posts-bot-cronjob:$(TAG) .
+	docker build -f services/comments/Dockerfile       -t $(REGISTRY)/comments:$(TAG)         .
 	docker push $(REGISTRY)/users:$(TAG)
 	docker push $(REGISTRY)/posts:$(TAG)
 	docker push $(REGISTRY)/posts-bot-cronjob:$(TAG)

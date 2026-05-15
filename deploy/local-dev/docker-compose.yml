@@ -124,8 +124,8 @@ services:
 
   users:
     build:
-      context: ../../services/users
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/users/Dockerfile
     ports:
       - "8881:8881"
     networks:
@@ -140,8 +140,8 @@ services:
 
   posts:
     build:
-      context: ../../services/posts
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/posts/Dockerfile
     ports:
       - "8885:8885"   # gRPC
       - "8882:8882"   # HTTP
@@ -159,8 +159,8 @@ services:
 
   comments:
     build:
-      context: ../../services/comments
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/comments/Dockerfile
     ports:
       - "8883:8883"   # gRPC
       - "8884:8884"   # HTTP
