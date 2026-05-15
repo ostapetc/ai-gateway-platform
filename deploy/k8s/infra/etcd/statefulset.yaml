@@ -18,10 +18,16 @@ spec:
     spec:
       containers:
         - name: etcd
-          image: bitnami/etcd:3.5
-          env:
-            - name: ALLOW_NONE_AUTHENTICATION
-              value: "yes"
+          image: registry.k8s.io/etcd:3.5.9-0
+          command:
+            - etcd
+            - --data-dir=/var/lib/etcd
+            - --listen-client-urls=http://0.0.0.0:2379
+            - --advertise-client-urls=http://0.0.0.0:2379
+            - --listen-peer-urls=http://0.0.0.0:2380
+            - --initial-advertise-peer-urls=http://0.0.0.0:2380
+            - --initial-cluster=default=http://0.0.0.0:2380
+            - --initial-cluster-state=new
           ports:
             - name: client
               containerPort: 2379
@@ -46,7 +52,7 @@ spec:
               memory: 256Mi
           volumeMounts:
             - name: etcd-data
-              mountPath: /bitnami/etcd
+              mountPath: /var/lib/etcd
       volumes:
         - name: etcd-data
           emptyDir: {}

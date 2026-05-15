@@ -105,17 +105,24 @@ services:
       - prometheus
 
   etcd:
-    image: bitnami/etcd:3.5
-    environment:
-      ALLOW_NONE_AUTHENTICATION: "yes"
+    image: quay.io/coreos/etcd:v3.5.9
+    command:
+      - etcd
+      - --data-dir=/var/lib/etcd
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://0.0.0.0:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://0.0.0.0:2380
+      - --initial-cluster=default=http://0.0.0.0:2380
+      - --initial-cluster-state=new
     ports:
       - "2379:2379"
     volumes:
-      - etcd-data:/bitnami/etcd
+      - etcd-data:/var/lib/etcd
     networks:
       - platform
     healthcheck:
-      test: ["CMD", "etcdctl", "endpoint", "health"]
+      test: ["CMD", "etcdctl", "--endpoints=http://localhost:2379", "endpoint", "health"]
       interval: 10s
       timeout: 5s
       retries: 5
