@@ -185,7 +185,7 @@ k8s-restart: ## Rolling restart of app pods (no image change needed)
 	$(KUBECTL) rollout restart deployment/comments -n $(NAMESPACE)
 
 .PHONY: k8s-deploy
-k8s-deploy: docker-push k8s-apply ## Build & push images, then apply all Kubernetes manifests
+k8s-deploy: docker-push k8s-apply k8s-restart ## Build & push images, apply manifests, restart pods
 
 .PHONY: deploy
 deploy: docker-push k8s-set-images k8s-rollout ## Full deploy: build → push → update k8s → wait for rollout

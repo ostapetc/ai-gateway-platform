@@ -2,5 +2,5 @@ name: posts-bot
 PostsRpc:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - ${ETCD_ADDRESS}
     Key: posts.rpc

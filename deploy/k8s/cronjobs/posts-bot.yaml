@@ -13,7 +13,10 @@ spec:
           containers:
             - name: posts-bot
               image: freelikeatruth/posts-bot-cronjob:latest
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: Always
               args:
                 - createposts
+              env:
+                - name: ETCD_ADDRESS
+                  value: "etcd.ai-gateway:2379"
           restartPolicy: OnFailure

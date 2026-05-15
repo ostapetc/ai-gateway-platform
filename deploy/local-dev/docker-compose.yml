@@ -145,6 +145,8 @@ services:
     ports:
       - "8885:8885"   # gRPC
       - "8882:8882"   # HTTP
+    environment:
+      ETCD_ADDRESS: etcd:2379
     networks:
       - platform
     depends_on:
@@ -164,6 +166,8 @@ services:
     ports:
       - "8883:8883"   # gRPC
       - "8884:8884"   # HTTP
+    environment:
+      ETCD_ADDRESS: etcd:2379
     networks:
       - platform
     depends_on:

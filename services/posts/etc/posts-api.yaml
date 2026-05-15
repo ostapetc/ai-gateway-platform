@@ -3,7 +3,7 @@ ListenOn: 0.0.0.0:8885
 
 Etcd:
   Hosts:
-    - 127.0.0.1:2379
+    - ${ETCD_ADDRESS}
   Key: posts.rpc
 
 RestConf:

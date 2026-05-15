@@ -41,6 +41,6 @@ func init() {
 
 func initConfig() {
 	var c config.Config
-	conf.MustLoad(confPath, &c)
+	conf.MustLoad(confPath, &c, conf.UseEnv())
 	svc.InitSvcCtx(c)
 }

@@ -19,7 +19,7 @@ spec:
       containers:
         - name: posts
           image: freelikeatruth/posts:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8882
@@ -35,6 +35,9 @@ spec:
               port: 8882
             initialDelaySeconds: 10
             periodSeconds: 30
+          env:
+            - name: ETCD_ADDRESS
+              value: "etcd.ai-gateway:2379"
           resources:
             requests:
               cpu: 50m
