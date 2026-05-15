@@ -180,7 +180,7 @@ docker-push: ## Build and push production images: make docker-push [REGISTRY=ost
 k8s-set-images: ## Update k8s deployments to use current REGISTRY/TAG
 	$(KUBECTL) set image deployment/users    users=$(REGISTRY)/users:$(TAG)       -n $(NAMESPACE)
 	$(KUBECTL) set image deployment/posts    posts=$(REGISTRY)/posts:$(TAG)       -n $(NAMESPACE)
-	$(KUBECTL) set image cronjob/posts-bot-cronjob printtime=$(REGISTRY)/posts-bot-cronjob:$(TAG) -n $(NAMESPACE)
+	$(KUBECTL) set image cronjob/posts-bot-cronjob posts-bot-cronjob=$(REGISTRY)/posts-bot-cronjob:$(TAG) -n $(NAMESPACE)
 	$(KUBECTL) set image deployment/comments comments=$(REGISTRY)/comments:$(TAG) -n $(NAMESPACE)
 
 .PHONY: k8s-rollout
@@ -194,6 +194,9 @@ k8s-restart: ## Rolling restart of app pods (no image change needed)
 	$(KUBECTL) rollout restart deployment/users    -n $(NAMESPACE)
 	$(KUBECTL) rollout restart deployment/posts    -n $(NAMESPACE)
 	$(KUBECTL) rollout restart deployment/comments -n $(NAMESPACE)
+
+.PHONY: k8s-deploy
+k8s-deploy: docker-push k8s-apply ## Build & push images, then apply all Kubernetes manifests
 
 .PHONY: deploy
 deploy: docker-push k8s-set-images k8s-rollout ## Full deploy: build → push → update k8s → wait for rollout

@@ -10,3 +10,6 @@ spec:
     - name: http
       port: 8882
       targetPort: 8882
+    - name: grpc
+      port: 8885
+      targetPort: 8885

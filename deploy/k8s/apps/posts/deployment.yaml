@@ -23,6 +23,8 @@ spec:
           ports:
             - name: http
               containerPort: 8882
+            - name: grpc
+              containerPort: 8885
           readinessProbe:
             tcpSocket:
               port: 8882
