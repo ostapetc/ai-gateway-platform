@@ -3,6 +3,7 @@ module github.com/ostapetc/ai-gateway-platform
 go 1.24.0
 
 require (
+	github.com/brianvoe/gofakeit/v6 v6.28.0
 	github.com/spf13/cobra v1.8.1
 	github.com/zeromicro/go-zero v1.10.1
 	google.golang.org/grpc v1.79.3
