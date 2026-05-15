@@ -6,6 +6,7 @@ option go_package = "./posts";
 service Posts {
   rpc Add(AddRequest) returns (AddResponse);
   rpc List(ListRequest) returns (ListResponse);
+  rpc GetRandom(GetRandomRequest) returns (GetRandomResponse);
 }
 
 message Post {
@@ -26,8 +27,18 @@ message AddResponse {
   uint64 id = 1;
 }
 
-message ListRequest {}
+message ListRequest {
+  
+}
 
 message ListResponse {
   repeated Post posts = 1;
+}
+
+message GetRandomRequest {
+
+}
+
+message GetRandomResponse {
+  Post post = 1;
 }

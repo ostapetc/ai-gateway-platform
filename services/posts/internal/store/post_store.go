@@ -1,6 +1,7 @@
 package store
 
 import (
+	"math/rand"
 	"sort"
 	"sync"
 	"sync/atomic"
@@ -33,6 +34,19 @@ func (s *PostStore) Add(userID uint64, title, body string) types.Post {
 	s.mu.Unlock()
 
 	return post
+}
+
+func (s *PostStore) GetRandom() (types.Post, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	if len(s.posts) == 0 {
+		return types.Post{}, false
+	}
+
+	post := s.posts[rand.Intn(len(s.posts))]
+
+	return post, true
 }
 
 func (s *PostStore) List() []types.Post {

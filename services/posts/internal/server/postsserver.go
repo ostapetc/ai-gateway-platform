@@ -31,6 +31,23 @@ func (s *PostsServer) Add(ctx context.Context, in *posts.AddRequest) (*posts.Add
 	return &posts.AddResponse{Id: resp.ID}, nil
 }
 
+func (s *PostsServer) GetRandom(ctx context.Context, in *posts.GetRandomRequest) (*posts.GetRandomResponse, error) {
+	l := logic.NewGetRandomPostLogic(ctx, s.svcCtx)
+	resp, err := l.GetRandomPost()
+	if err != nil {
+		return nil, err
+	}
+	return &posts.GetRandomResponse{
+		Post: &posts.Post{
+			Id:        resp.Post.ID,
+			UserId:    resp.Post.UserID,
+			Title:     resp.Post.Title,
+			Body:      resp.Post.Body,
+			CreatedAt: resp.Post.CreatedAt,
+		},
+	}, nil
+}
+
 func (s *PostsServer) List(ctx context.Context, in *posts.ListRequest) (*posts.ListResponse, error) {
 	l := logic.NewListPostsLogic(ctx, s.svcCtx)
 	resp, err := l.ListPosts()

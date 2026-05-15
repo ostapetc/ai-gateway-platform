@@ -24,6 +24,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/posts",
 				Handler: ListPostsHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/posts/random",
+				Handler: GetRandomPostHandler(serverCtx),
+			},
 		},
 	)
 }

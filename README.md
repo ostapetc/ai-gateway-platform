@@ -1,5 +1,5 @@
 ### Generate service code by service.proto file
-goctl rpc protoc service.proto \         artos@artos-pc
+goctl rpc protoc service.proto \
 --go_out=./grpc \    
 --go-grpc_out=./grpc \
 --zrpc_out=.
