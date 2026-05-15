@@ -28,13 +28,13 @@ spec:
             - name: peer
               containerPort: 2380
           readinessProbe:
-            exec:
-              command: ["etcdctl", "endpoint", "health"]
+            tcpSocket:
+              port: 2379
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
-            exec:
-              command: ["etcdctl", "endpoint", "health"]
+            tcpSocket:
+              port: 2379
             initialDelaySeconds: 15
             periodSeconds: 30
           resources:
@@ -47,11 +47,6 @@ spec:
           volumeMounts:
             - name: etcd-data
               mountPath: /bitnami/etcd
-  volumeClaimTemplates:
-    - metadata:
-        name: etcd-data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Gi
+      volumes:
+        - name: etcd-data
+          emptyDir: {}

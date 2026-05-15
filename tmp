@@ -1,12 +1,12 @@
-Back-off restarting failed container comments in pod comments-844f4b8546-fmh5z_ai-gateway(10234073-73e5-4cc8-b7ed-8cb9b6073367)
+Back-off restarting failed container comments in pod comments-6d49488fc6-dpk9z_ai-gateway(a91e89a3-32f8-43a5-a861-141eea53a39c)
 
 Starting rpc server at 0.0.0.0:8883...
 Starting rest server at 0.0.0.0:8884...
-{"level":"warn","ts":"2026-05-15T09:59:52.096809Z","logger":"etcd-client","caller":"v3@v3.5.21/retry_interceptor.go:63","msg":"retrying of unary invoker failed","target":"etcd-endpoints://0xc0000ee1e0/127.0.0.1:2379","attempt":0,"error":"rpc error: code = DeadlineExceeded desc = latest balancer error: connection error: desc = \"transport: Error while dialing: dial tcp 127.0.0.1:2379: connect: connection refused\""}
-{"@timestamp":"2026-05-15T09:59:52.097Z","caller":"zrpc/server.go:90","content":"context deadline exceeded","level":"error"}
+{"level":"warn","ts":"2026-05-15T12:22:14.721368Z","logger":"etcd-client","caller":"v3@v3.5.21/retry_interceptor.go:63","msg":"retrying of unary invoker failed","target":"etcd-endpoints://0xc00054e1e0/etcd.ai-gateway:2379","attempt":0,"error":"rpc error: code = DeadlineExceeded desc = latest balancer error: connection error: desc = \"transport: Error while dialing: dial tcp 10.105.45.194:2379: connect: connection refused\""}
+{"@timestamp":"2026-05-15T12:22:14.721Z","caller":"zrpc/server.go:90","content":"context deadline exceeded","level":"error"}
 panic: context deadline exceeded
 
-goroutine 41 [running]:
+goroutine 38 [running]:
 github.com/zeromicro/go-zero/zrpc.(*RpcServer).Start(0x0?)
 	github.com/zeromicro/go-zero@v1.10.1/zrpc/server.go:91 +0x77
 github.com/zeromicro/go-zero/core/service.(*ServiceGroup).doStart.func1()
@@ -15,5 +15,3 @@ github.com/zeromicro/go-zero/core/threading.(*RoutineGroup).Run.func1()
 	github.com/zeromicro/go-zero@v1.10.1/core/threading/routinegroup.go:23 +0x4c
 created by github.com/zeromicro/go-zero/core/threading.(*RoutineGroup).Run in goroutine 1
 	github.com/zeromicro/go-zero@v1.10.1/core/threading/routinegroup.go:21 +0x73
-Starting rpc server at 0.0.0.0:8883...
-Starting rest server at 0.0.0.0:8884...
