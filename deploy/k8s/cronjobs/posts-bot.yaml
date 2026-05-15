@@ -13,7 +13,7 @@ spec:
           containers:
             - name: posts-bot
               image: freelikeatruth/posts-bot-cronjob:latest
-              imagePullPolicy: Always
+              imagePullPolicy: IfNotPresent
               args:
                 - createposts
               env:

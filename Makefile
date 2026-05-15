@@ -4,7 +4,7 @@ KUBECTL    := kubectl --kubeconfig $(KUBECONFIG)
 K8S_DIR    := deploy/k8s
 NAMESPACE  := ai-gateway
 REGISTRY   ?= freelikeatruth
-TAG        ?= latest
+TAG        ?= $(shell git rev-parse --short HEAD)
 
 # ── Dev environment ───────────────────────────────────────────────────────────
 
@@ -188,7 +188,7 @@ k8s-restart: ## Rolling restart of app pods (no image change needed)
 	$(KUBECTL) rollout restart deployment/comments -n $(NAMESPACE)
 
 .PHONY: k8s-deploy
-k8s-deploy: docker-push k8s-apply k8s-restart ## Build & push images, apply manifests, restart pods
+k8s-deploy: docker-push k8s-apply k8s-set-images k8s-rollout ## Build & push images, apply manifests, update to SHA tag, wait for rollout
 
 .PHONY: deploy
 deploy: docker-push k8s-set-images k8s-rollout ## Full deploy: build → push → update k8s → wait for rollout
