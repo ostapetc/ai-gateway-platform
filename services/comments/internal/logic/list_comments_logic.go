@@ -24,6 +24,6 @@ func NewListCommentsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *List
 }
 
 func (l *ListCommentsLogic) ListComments(req *types.ListCommentsRequest) (*types.ListCommentsResponse, error) {
-	items := l.svcCtx.CommentStore.ListByPostID(req.PostID)
+	items := l.svcCtx.CommentStore.List(req.PostID)
 	return &types.ListCommentsResponse{Comments: items}, nil
 }

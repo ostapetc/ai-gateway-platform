@@ -35,13 +35,19 @@ func (s *CommentStore) Add(userID, postID uint64, body string) types.Comment {
 	return c
 }
 
-func (s *CommentStore) ListByPostID(postID uint64) []types.Comment {
+func (s *CommentStore) List(postID uint64) []types.Comment {
 	s.mu.RLock()
 
 	var result []types.Comment
-	for _, c := range s.comments {
-		if c.PostID == postID {
-			result = append(result, c)
+
+	if postID == 0 {
+		result = make([]types.Comment, len(s.comments))
+		copy(result, s.comments)
+	} else {
+		for _, c := range s.comments {
+			if c.PostID == postID {
+				result = append(result, c)
+			}
 		}
 	}
 
