@@ -3,6 +3,8 @@ syntax = "proto3";
 package posts;
 option go_package = "./posts";
 
+import "google/protobuf/timestamp.proto";
+
 service Posts {
   rpc Add(AddRequest) returns (AddResponse);
   rpc List(ListRequest) returns (ListResponse);
@@ -14,7 +16,7 @@ message Post {
   uint64 user_id = 2;
   string title = 3;
   string body = 4;
-  int64 created_at = 5;
+  google.protobuf.Timestamp created_at = 5;
 }
 
 message AddRequest {

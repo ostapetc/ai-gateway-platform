@@ -186,7 +186,7 @@ func TestListComments(t *testing.T) {
 			r.Body.Close()
 		}
 
-		check := func(postID int64, wantCount int) {
+		check := func(postID uint64, wantCount int) {
 			t.Helper()
 			resp, err := http.Get(fmt.Sprintf("%s/comments/%d", base, postID))
 			if err != nil {

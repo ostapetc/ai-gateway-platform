@@ -15,6 +15,17 @@ func CreatePosts(_ *cobra.Command, _ []string) error {
 	ctx := context.Background()
 	sc := svc.GetSvcCtx()
 
+	for range 3 {
+		err := createPost(ctx, sc)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func createPost(ctx context.Context, sc *svc.ServiceContext) error {
 	req := &posts.AddRequest{
 		UserId: uint64(rand.IntN(10) + 1),
 		Title:  generateTitle(),

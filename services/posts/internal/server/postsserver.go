@@ -7,6 +7,7 @@ import (
 	"github.com/ostapetc/ai-gateway-platform/services/posts/internal/logic"
 	"github.com/ostapetc/ai-gateway-platform/services/posts/internal/svc"
 	"github.com/ostapetc/ai-gateway-platform/services/posts/internal/types"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type PostsServer struct {
@@ -43,7 +44,7 @@ func (s *PostsServer) GetRandom(ctx context.Context, in *posts.GetRandomRequest)
 			UserId:    resp.Post.UserID,
 			Title:     resp.Post.Title,
 			Body:      resp.Post.Body,
-			CreatedAt: resp.Post.CreatedAt,
+			CreatedAt: timestamppb.New(resp.Post.CreatedAt),
 		},
 	}, nil
 }
@@ -62,7 +63,7 @@ func (s *PostsServer) List(ctx context.Context, in *posts.ListRequest) (*posts.L
 			UserId:    p.UserID,
 			Title:     p.Title,
 			Body:      p.Body,
-			CreatedAt: p.CreatedAt,
+			CreatedAt: timestamppb.New(p.CreatedAt),
 		}
 	}
 	return &posts.ListResponse{Posts: result}, nil

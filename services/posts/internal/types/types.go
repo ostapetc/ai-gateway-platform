@@ -3,6 +3,8 @@
 
 package types
 
+import "time"
+
 type AddPostRequest struct {
 	UserID uint64 `json:"user_id" validate:"required"`
 	Title  string `json:"title" validate:"required,min=1,max=255"`
@@ -10,11 +12,11 @@ type AddPostRequest struct {
 }
 
 type AddPostResponse struct {
-	ID        uint64 `json:"id"`
-	UserID    uint64 `json:"user_id"`
-	Title     string `json:"title"`
-	Body      string `json:"body"`
-	CreatedAt int64  `json:"created_at"`
+	ID        uint64    `json:"id"`
+	UserID    uint64    `json:"user_id"`
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type ListPostsResponse struct {
@@ -26,9 +28,9 @@ type GetRandomPostResponse struct {
 }
 
 type Post struct {
-	ID        uint64 `json:"id"`
-	UserID    uint64 `json:"user_id"`
-	Title     string `json:"title"`
-	Body      string `json:"body"`
-	CreatedAt int64  `json:"created_at"`
+	ID        uint64    `json:"id"`
+	UserID    uint64    `json:"user_id"`
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"created_at"`
 }

@@ -3,6 +3,8 @@ syntax = "proto3";
 package comments;
 option go_package = "./comments";
 
+import "google/protobuf/timestamp.proto";
+
 service Comments {
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc List(ListRequest) returns (ListResponse);
@@ -13,7 +15,7 @@ message Comment {
   uint64 user_id = 2;
   uint64 post_id = 3;
   string body = 4;
-  string created_at = 5;
+  google.protobuf.Timestamp created_at = 5;
 }
 
 message CreateRequest {

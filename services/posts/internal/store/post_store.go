@@ -26,7 +26,7 @@ func (s *PostStore) Add(userID uint64, title, body string) types.Post {
 		UserID:    userID,
 		Title:     title,
 		Body:      body,
-		CreatedAt: time.Now().Unix(),
+		CreatedAt: time.Now(),
 	}
 
 	s.mu.Lock()
@@ -58,7 +58,7 @@ func (s *PostStore) List() []types.Post {
 	s.mu.RUnlock()
 
 	sort.Slice(result, func(i, j int) bool {
-		return result[i].CreatedAt > result[j].CreatedAt
+		return result[i].CreatedAt.After(result[j].CreatedAt)
 	})
 
 	return result

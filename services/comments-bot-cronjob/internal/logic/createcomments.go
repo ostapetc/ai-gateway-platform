@@ -16,6 +16,17 @@ func CreateComments(_ *cobra.Command, _ []string) error {
 	ctx := context.Background()
 	sc := svc.GetSvcCtx()
 
+	for range 10 {
+		err := createComment(ctx, sc)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func createComment(ctx context.Context, sc *svc.ServiceContext) error {
 	postsResp, err := sc.PostsClient.GetRandom(ctx, &posts.GetRandomRequest{})
 	if err != nil {
 		return fmt.Errorf("get random post error: %w", err)
