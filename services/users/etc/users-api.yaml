@@ -1,3 +1,12 @@
-Name: users-api
-Host: 0.0.0.0
-Port: 8881
+Name: users.rpc
+ListenOn: 0.0.0.0:8886
+
+Etcd:
+  Hosts:
+    - ${ETCD_ADDRESS}
+  Key: users.rpc
+
+RestConf:
+  Name: users-api
+  Host: 0.0.0.0
+  Port: 8881

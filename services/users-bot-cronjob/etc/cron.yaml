@@ -1,0 +1,6 @@
+name: users-bot
+UsersRpc:
+  Etcd:
+    Hosts:
+      - ${ETCD_ADDRESS}
+    Key: users.rpc

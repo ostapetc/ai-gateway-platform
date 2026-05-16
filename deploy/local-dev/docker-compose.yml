@@ -134,7 +134,10 @@ services:
       context: ../..
       dockerfile: services/users/Dockerfile
     ports:
-      - "8881:8881"
+      - "8886:8886"   # gRPC
+      - "8881:8881"   # HTTP
+    environment:
+      ETCD_ADDRESS: etcd:2379
     networks:
       - platform
     depends_on:
@@ -143,6 +146,8 @@ services:
       redis:
         condition: service_healthy
       nats:
+        condition: service_healthy
+      etcd:
         condition: service_healthy
 
   posts:

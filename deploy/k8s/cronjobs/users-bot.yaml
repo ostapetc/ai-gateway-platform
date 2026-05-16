@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: users-bot-cronjob
+  namespace: ai-gateway
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: users-bot
+              image: freelikeatruth/users-bot-cronjob:latest
+              imagePullPolicy: IfNotPresent
+              args:
+                - createusers
+              env:
+                - name: ETCD_ADDRESS
+                  value: "etcd.ai-gateway:2379"
+          restartPolicy: OnFailure

@@ -161,19 +161,22 @@ docker-push: ## Build and push production images: make docker-push [REGISTRY=ost
 	docker build -f services/posts-bot-cronjob/Dockerfile    -t $(REGISTRY)/posts-bot-cronjob:$(TAG)    .
 	docker build -f services/comments/Dockerfile             -t $(REGISTRY)/comments:$(TAG)             .
 	docker build -f services/comments-bot-cronjob/Dockerfile -t $(REGISTRY)/comments-bot-cronjob:$(TAG) .
+	docker build -f services/users-bot-cronjob/Dockerfile    -t $(REGISTRY)/users-bot-cronjob:$(TAG)    .
 	docker push $(REGISTRY)/users:$(TAG)
 	docker push $(REGISTRY)/posts:$(TAG)
 	docker push $(REGISTRY)/posts-bot-cronjob:$(TAG)
 	docker push $(REGISTRY)/comments:$(TAG)
 	docker push $(REGISTRY)/comments-bot-cronjob:$(TAG)
+	docker push $(REGISTRY)/users-bot-cronjob:$(TAG)
 
 .PHONY: k8s-set-images
 k8s-set-images: ## Update k8s deployments to use current REGISTRY/TAG
-	$(KUBECTL) set image deployment/users       users=$(REGISTRY)/users:$(TAG)                            -n $(NAMESPACE)
-	$(KUBECTL) set image deployment/posts       posts=$(REGISTRY)/posts:$(TAG)                            -n $(NAMESPACE)
-	$(KUBECTL) set image cronjob/posts-bot-cronjob    posts-bot=$(REGISTRY)/posts-bot-cronjob:$(TAG)    -n $(NAMESPACE)
-	$(KUBECTL) set image deployment/comments    comments=$(REGISTRY)/comments:$(TAG)                      -n $(NAMESPACE)
-	$(KUBECTL) set image cronjob/comments-bot-cronjob comments-bot=$(REGISTRY)/comments-bot-cronjob:$(TAG) -n $(NAMESPACE)
+	$(KUBECTL) set image deployment/users             users=$(REGISTRY)/users:$(TAG)                              -n $(NAMESPACE)
+	$(KUBECTL) set image deployment/posts             posts=$(REGISTRY)/posts:$(TAG)                              -n $(NAMESPACE)
+	$(KUBECTL) set image cronjob/posts-bot-cronjob    posts-bot=$(REGISTRY)/posts-bot-cronjob:$(TAG)             -n $(NAMESPACE)
+	$(KUBECTL) set image deployment/comments          comments=$(REGISTRY)/comments:$(TAG)                       -n $(NAMESPACE)
+	$(KUBECTL) set image cronjob/comments-bot-cronjob comments-bot=$(REGISTRY)/comments-bot-cronjob:$(TAG)      -n $(NAMESPACE)
+	$(KUBECTL) set image cronjob/users-bot-cronjob    users-bot=$(REGISTRY)/users-bot-cronjob:$(TAG)            -n $(NAMESPACE)
 
 .PHONY: k8s-rollout
 k8s-rollout: ## Wait for all app deployments to finish rolling out

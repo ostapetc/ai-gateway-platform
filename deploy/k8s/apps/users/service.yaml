@@ -7,6 +7,9 @@ spec:
   selector:
     app: users
   ports:
+    - name: grpc
+      port: 8886
+      targetPort: 8886
     - name: http
       port: 8881
       targetPort: 8881

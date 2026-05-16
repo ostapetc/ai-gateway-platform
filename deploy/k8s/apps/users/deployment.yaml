@@ -21,8 +21,13 @@ spec:
           image: freelikeatruth/users:latest
           imagePullPolicy: IfNotPresent
           ports:
+            - name: grpc
+              containerPort: 8886
             - name: http
               containerPort: 8881
+          env:
+            - name: ETCD_ADDRESS
+              value: "etcd.ai-gateway:2379"
           readinessProbe:
             tcpSocket:
               port: 8881
