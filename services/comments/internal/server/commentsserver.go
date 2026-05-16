@@ -33,7 +33,7 @@ func (s *CommentsServer) Create(ctx context.Context, in *comments.CreateRequest)
 
 func (s *CommentsServer) List(ctx context.Context, in *comments.ListRequest) (*comments.ListResponse, error) {
 	l := logic.NewListCommentsLogic(ctx, s.svcCtx)
-	resp, err := l.ListComments(&types.ListCommentsRequest{PostID: in.PostID})
+	resp, err := l.ListComments(&types.ListCommentsRequest{PostID: in.PostId})
 	if err != nil {
 		return nil, err
 	}
