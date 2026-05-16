@@ -21,6 +21,7 @@ type AddPostResponse struct {
 
 type ListPostsResponse struct {
 	Posts []Post `json:"posts"`
+	Total int    `json:"total"`
 }
 
 type GetRandomPostResponse struct {

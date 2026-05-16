@@ -27,7 +27,10 @@ func NewListPostsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListPos
 }
 
 func (l *ListPostsLogic) ListPosts() (*types.ListPostsResponse, error) {
+	posts := l.svcCtx.PostStore.List()
+	
 	return &types.ListPostsResponse{
-		Posts: l.svcCtx.PostStore.List(),
+		Posts: posts,
+		Total: len(posts),
 	}, nil
 }

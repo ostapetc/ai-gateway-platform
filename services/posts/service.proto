@@ -35,6 +35,7 @@ message ListRequest {
 
 message ListResponse {
   repeated Post posts = 1;
+  uint64 total = 2;
 }
 
 message GetRandomRequest {

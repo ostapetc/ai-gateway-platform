@@ -128,6 +128,9 @@ func TestListComments(t *testing.T) {
 		if len(got.Comments) != 0 {
 			t.Fatalf("want 0 comments, got %d", len(got.Comments))
 		}
+		if got.Total != 0 {
+			t.Fatalf("want total 0, got %d", got.Total)
+		}
 	})
 
 	t.Run("created comment appears in list", func(t *testing.T) {
@@ -153,6 +156,9 @@ func TestListComments(t *testing.T) {
 		list := decode[types.ListCommentsResponse](t, listResp)
 		if len(list.Comments) != 1 {
 			t.Fatalf("want 1 comment, got %d", len(list.Comments))
+		}
+		if list.Total != 1 {
+			t.Fatalf("want total 1, got %d", list.Total)
 		}
 
 		c := list.Comments[0]
@@ -197,6 +203,9 @@ func TestListComments(t *testing.T) {
 			list := decode[types.ListCommentsResponse](t, resp)
 			if len(list.Comments) != wantCount {
 				t.Errorf("post %d: want %d comments, got %d", postID, wantCount, len(list.Comments))
+			}
+			if list.Total != wantCount {
+				t.Errorf("post %d: want total %d, got %d", postID, wantCount, list.Total)
 			}
 			for _, c := range list.Comments {
 				if c.PostID != postID {

@@ -24,4 +24,5 @@ type ListCommentsRequest struct {
 
 type ListCommentsResponse struct {
 	Comments []Comment `json:"comments"`
+	Total    int       `json:"total"`
 }
