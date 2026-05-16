@@ -38,7 +38,7 @@ func CreateComments(_ *cobra.Command, _ []string) error {
 		return fmt.Errorf("createComments: %w", err)
 	}
 
-	fmt.Printf("created comment id=%d\n", resp.Id)
+	fmt.Printf("created comment for random post id=%d\n", resp.Id)
 
 	return nil
 }
