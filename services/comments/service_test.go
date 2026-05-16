@@ -43,7 +43,7 @@ func startServer(t *testing.T) (baseURL string, stop func()) {
 	go srv.Start()
 
 	base := fmt.Sprintf("http://127.0.0.1:%d", port)
-	waitReady(t, base+"/comments/0")
+	waitReady(t, base+"/comments")
 	return base, srv.Stop
 }
 
@@ -114,7 +114,7 @@ func TestListComments(t *testing.T) {
 		base, stop := startServer(t)
 		defer stop()
 
-		resp, err := http.Get(base + "/comments/999")
+		resp, err := http.Get(base + "/comments?post_id=999")
 		if err != nil {
 			t.Fatalf("GET /comments/999: %v", err)
 		}
@@ -140,7 +140,7 @@ func TestListComments(t *testing.T) {
 		defer createResp.Body.Close()
 		created := decode[types.CreateCommentResponse](t, createResp)
 
-		listResp, err := http.Get(fmt.Sprintf("%s/comments/%d", base, req.PostID))
+		listResp, err := http.Get(fmt.Sprintf("%s/comments?post_id=%d", base, req.PostID))
 		if err != nil {
 			t.Fatalf("GET /comments/%d: %v", req.PostID, err)
 		}
@@ -188,7 +188,7 @@ func TestListComments(t *testing.T) {
 
 		check := func(postID uint64, wantCount int) {
 			t.Helper()
-			resp, err := http.Get(fmt.Sprintf("%s/comments/%d", base, postID))
+			resp, err := http.Get(fmt.Sprintf("%s/comments?post_id=%d", base, postID))
 			if err != nil {
 				t.Fatalf("GET /comments/%d: %v", postID, err)
 			}

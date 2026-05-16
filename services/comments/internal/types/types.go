@@ -19,7 +19,7 @@ type CreateCommentResponse struct {
 }
 
 type ListCommentsRequest struct {
-	PostID uint64 `path:"post_id"`
+	PostID uint64 `form:"post_id,optional"`
 }
 
 type ListCommentsResponse struct {

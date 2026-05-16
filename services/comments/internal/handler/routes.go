@@ -18,10 +18,5 @@ func RegisterHandlers(server *rest.Server, svcCtx *svc.ServiceContext) {
 			Path:    "/comments",
 			Handler: ListCommentsHandler(svcCtx),
 		},
-		{
-			Method:  "GET",
-			Path:    "/comments/:post_id",
-			Handler: ListCommentsHandler(svcCtx),
-		},
 	})
 }
