@@ -6,16 +6,15 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
-type (
-	Client interface {
-		Add(ctx context.Context, in *AddRequest) (*AddResponse, error)
-		List(ctx context.Context, in *ListRequest) (*ListResponse, error)
-	}
+type Client interface {
+	Add(ctx context.Context, in *AddRequest) (*AddResponse, error)
+	List(ctx context.Context, in *ListRequest) (*ListResponse, error)
+	GetRandom(ctx context.Context, in *GetRandomRequest) (*GetRandomResponse, error)
+}
 
-	defaultClient struct {
-		cli zrpc.Client
-	}
-)
+type defaultClient struct {
+	cli zrpc.Client
+}
 
 func NewClient(cli zrpc.Client) Client {
 	return &defaultClient{cli}
@@ -27,4 +26,8 @@ func (m *defaultClient) Add(ctx context.Context, in *AddRequest) (*AddResponse, 
 
 func (m *defaultClient) List(ctx context.Context, in *ListRequest) (*ListResponse, error) {
 	return NewPostsClient(m.cli.Conn()).List(ctx, in)
+}
+
+func (m *defaultClient) GetRandom(ctx context.Context, in *GetRandomRequest) (*GetRandomResponse, error) {
+	return NewPostsClient(m.cli.Conn()).GetRandom(ctx, in)
 }
