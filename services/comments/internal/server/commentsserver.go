@@ -48,5 +48,5 @@ func (s *CommentsServer) List(ctx context.Context, in *comments.ListRequest) (*c
 			CreatedAt: c.CreatedAt,
 		}
 	}
-	return &comments.ListResponse{Comments: result}, nil
+	return &comments.ListResponse{Comments: result, Total: uint64(resp.Total)}, nil
 }

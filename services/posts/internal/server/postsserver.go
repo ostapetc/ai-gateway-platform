@@ -66,5 +66,5 @@ func (s *PostsServer) List(ctx context.Context, in *posts.ListRequest) (*posts.L
 			CreatedAt: timestamppb.New(p.CreatedAt),
 		}
 	}
-	return &posts.ListResponse{Posts: result}, nil
+	return &posts.ListResponse{Posts: result, Total: uint64(resp.Total)}, nil
 }
