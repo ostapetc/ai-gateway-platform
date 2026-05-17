@@ -8,4 +8,9 @@ PostsRpc:
   Etcd:
     Hosts:
       - ${ETCD_ADDRESS}
-    Key: posts.rpc    
+    Key: posts.rpc
+UsersRpc:
+  Etcd:
+    Hosts:
+      - ${ETCD_ADDRESS}
+    Key: users.rpc

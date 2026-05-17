@@ -9,6 +9,7 @@ import (
 	"github.com/ostapetc/ai-gateway-platform/services/comments-bot-cronjob/internal/svc"
 	comments "github.com/ostapetc/ai-gateway-platform/services/comments/grpc/comments"
 	"github.com/ostapetc/ai-gateway-platform/services/posts/grpc/posts"
+	"github.com/ostapetc/ai-gateway-platform/services/users/grpc/users"
 	"github.com/spf13/cobra"
 )
 
@@ -33,13 +34,22 @@ func createComment(ctx context.Context, sc *svc.ServiceContext) error {
 	}
 
 	post := postsResp.Post
-
 	if post == nil {
 		return fmt.Errorf("no random posts found")
 	}
 
+	usersResp, err := sc.UsersClient.GetRandom(ctx, &users.GetRandomRequest{})
+	if err != nil {
+		return fmt.Errorf("get random user error: %w", err)
+	}
+
+	user := usersResp.User
+	if user == nil {
+		return fmt.Errorf("no random users found")
+	}
+
 	req := &comments.CreateRequest{
-		UserId: uint64(rand.IntN(10) + 1),
+		UserId: user.Id,
 		PostId: post.Id,
 		Body:   generateBody(),
 	}

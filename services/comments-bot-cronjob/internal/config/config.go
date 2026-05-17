@@ -6,4 +6,5 @@ type Config struct {
 	Name        string             `json:"name"`
 	CommentsRpc zrpc.RpcClientConf `json:"CommentsRpc"`
 	PostsRpc    zrpc.RpcClientConf `json:"PostsRpc"`
+	UsersRpc    zrpc.RpcClientConf `json:"UsersRpc"`
 }
