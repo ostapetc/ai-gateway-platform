@@ -8,6 +8,7 @@ import (
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/ostapetc/ai-gateway-platform/services/posts-bot-cronjob/internal/svc"
 	posts "github.com/ostapetc/ai-gateway-platform/services/posts/grpc/posts"
+	"github.com/ostapetc/ai-gateway-platform/services/users/grpc/users"
 	"github.com/spf13/cobra"
 )
 
@@ -26,8 +27,18 @@ func CreatePosts(_ *cobra.Command, _ []string) error {
 }
 
 func createPost(ctx context.Context, sc *svc.ServiceContext) error {
+	usersResp, err := sc.UsersClient.GetRandom(ctx, &users.GetRandomRequest{})
+	if err != nil {
+		return fmt.Errorf("get random user error: %w", err)
+	}
+
+	user := usersResp.User
+	if user == nil {
+		return fmt.Errorf("no random users found")
+	}
+
 	req := &posts.AddRequest{
-		UserId: uint64(rand.IntN(10) + 1),
+		UserId: user.Id,
 		Title:  generateTitle(),
 		Body:   generateBody(),
 	}
