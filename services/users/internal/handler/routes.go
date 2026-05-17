@@ -16,6 +16,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
+				Path:    "/users/random",
+				Handler: GetRandomUserHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/users/:id",
 				Handler: GetUserHandler(serverCtx),
 			},

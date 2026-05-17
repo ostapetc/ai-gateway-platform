@@ -44,3 +44,18 @@ func (s *UsersServer) Get(ctx context.Context, in *users.GetRequest) (*users.Get
 		},
 	}, nil
 }
+
+func (s *UsersServer) GetRandom(ctx context.Context, in *users.GetRandomRequest) (*users.GetRandomResponse, error) {
+	l := logic.NewGetRandomUserLogic(ctx, s.svcCtx)
+	resp, err := l.GetRandomUser()
+	if err != nil {
+		return nil, err
+	}
+	return &users.GetRandomResponse{
+		User: &users.User{
+			Id:       resp.User.ID,
+			Username: resp.User.Username,
+			Email:    resp.User.Email,
+		},
+	}, nil
+}

@@ -1,6 +1,7 @@
 package store
 
 import (
+	"math/rand"
 	"sync"
 	"sync/atomic"
 
@@ -42,4 +43,15 @@ func (s *UserStore) Get(id uint64) (types.User, bool) {
 	}
 
 	return types.User{}, false
+}
+
+func (s *UserStore) GetRandom() (types.User, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	if len(s.users) == 0 {
+		return types.User{}, false
+	}
+
+	return s.users[rand.Intn(len(s.users))], true
 }

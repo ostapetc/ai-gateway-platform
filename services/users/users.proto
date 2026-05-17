@@ -6,6 +6,7 @@ option go_package = "./users";
 service Users {
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc Get(GetRequest) returns (GetResponse);
+  rpc GetRandom(GetRandomRequest) returns (GetRandomResponse);
 }
 
 message User {
@@ -29,5 +30,13 @@ message GetRequest {
 }
 
 message GetResponse {
+  User user = 1;
+}
+
+message GetRandomRequest {
+
+}
+
+message GetRandomResponse {
   User user = 1;
 }

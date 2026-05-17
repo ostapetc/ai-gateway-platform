@@ -15,3 +15,7 @@ type CreateUserRequest struct {
 type CreateUserResponse struct {
 	ID uint64 `json:"id"`
 }
+
+type GetRandomUserResponse struct {
+	User User `json:"user"`
+}
