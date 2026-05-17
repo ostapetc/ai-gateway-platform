@@ -2,7 +2,8 @@ FROM golang:1.24-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-COPY services/posts/ services/posts/
+COPY services/users/grpc/ services/users/grpc/
+COPY services/posts/grpc/ services/posts/grpc/
 COPY services/posts-bot-cronjob/ services/posts-bot-cronjob/
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o posts-bot-cronjob ./services/posts-bot-cronjob
 

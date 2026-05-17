@@ -2,8 +2,9 @@ FROM golang:1.24-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-COPY services/comments/ services/comments/
-COPY services/posts/ services/posts/
+COPY services/users/grpc/ services/users/grpc/
+COPY services/comments/grpc/ services/comments/grpc/
+COPY services/posts/grpc/ services/posts/grpc/
 COPY services/comments-bot-cronjob/ services/comments-bot-cronjob/
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o comments-bot-cronjob ./services/comments-bot-cronjob
 

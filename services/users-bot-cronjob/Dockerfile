@@ -2,7 +2,7 @@ FROM golang:1.24-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-COPY services/users/ services/users/
+COPY services/users/grpc/ services/users/grpc/
 COPY services/users-bot-cronjob/ services/users-bot-cronjob/
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -o users-bot-cronjob ./services/users-bot-cronjob
 
