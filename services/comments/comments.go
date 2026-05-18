@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 
 	"github.com/ostapetc/ai-gateway-platform/services/comments/grpc/comments"
 	"github.com/ostapetc/ai-gateway-platform/services/comments/internal/config"
@@ -10,7 +11,9 @@ import (
 	"github.com/ostapetc/ai-gateway-platform/services/comments/internal/server"
 	"github.com/ostapetc/ai-gateway-platform/services/comments/internal/svc"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/zeromicro/go-zero/core/conf"
+	goprometheus "github.com/zeromicro/go-zero/core/prometheus"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -25,6 +28,9 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c, conf.UseEnv())
+
+	goprometheus.Enable()
+
 	ctx := svc.NewServiceContext(c)
 
 	grpcServer := zrpc.MustNewServer(c.RpcServerConf, func(s *grpc.Server) {
@@ -37,6 +43,10 @@ func main() {
 
 	restServer := rest.MustNewServer(c.RestConf)
 	handler.RegisterHandlers(restServer, ctx)
+	
+	restServer.AddRoutes([]rest.Route{
+		{Method: http.MethodGet, Path: "/metrics", Handler: promhttp.Handler().ServeHTTP},
+	})
 
 	group := service.NewServiceGroup()
 	defer group.Stop()

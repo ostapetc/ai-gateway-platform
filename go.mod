@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/brianvoe/gofakeit/v6 v6.28.0
+	github.com/prometheus/client_golang v1.23.2
 	github.com/spf13/cobra v1.8.1
 	github.com/zeromicro/go-zero v1.10.1
 	google.golang.org/grpc v1.79.3
@@ -49,7 +50,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.3.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/prometheus/client_golang v1.23.2 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.66.1 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect

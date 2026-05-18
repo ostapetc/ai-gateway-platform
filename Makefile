@@ -190,6 +190,12 @@ k8s-restart: ## Rolling restart of app pods (no image change needed)
 	$(KUBECTL) rollout restart deployment/posts    -n $(NAMESPACE)
 	$(KUBECTL) rollout restart deployment/comments -n $(NAMESPACE)
 
+.PHONY: k8s-restart-infra
+k8s-restart-infra: ## Rolling restart of infra pods (picks up ConfigMap changes)
+	$(KUBECTL) rollout restart deployment/grafana    -n $(NAMESPACE)
+	$(KUBECTL) rollout restart deployment/prometheus -n $(NAMESPACE)
+	$(KUBECTL) rollout restart deployment/otelcol    -n $(NAMESPACE)
+
 .PHONY: k8s-deploy
 k8s-deploy: docker-push k8s-apply k8s-set-images k8s-rollout ## Build & push images, apply manifests, update to SHA tag, wait for rollout
 

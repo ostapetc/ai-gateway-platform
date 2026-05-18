@@ -46,7 +46,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "sum(rate(rpc_server_requests_total{job=~\"$service\"}[1m])) by (job, method)",
+              "expr": "sum(rate(rpc_server_requests_code_total{job=~\"$service\"}[1m])) by (job, method)",
               "legendFormat": "{{job}}/{{method}}",
               "refId": "A"
             }
@@ -71,7 +71,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "sum(rate(rpc_server_requests_total{job=~\"$service\", code!=\"OK\"}[1m])) by (job, method, code)",
+              "expr": "sum(rate(rpc_server_requests_code_total{job=~\"$service\", code!=\"0\"}[1m])) by (job, method, code)",
               "legendFormat": "{{job}}/{{method}} {{code}}",
               "refId": "A"
             }
@@ -97,19 +97,19 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "histogram_quantile(0.50, sum(rate(rpc_server_request_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
+              "expr": "histogram_quantile(0.50, sum(rate(rpc_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
               "legendFormat": "{{job}}/{{method}} p50",
               "refId": "A"
             },
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "histogram_quantile(0.95, sum(rate(rpc_server_request_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
+              "expr": "histogram_quantile(0.95, sum(rate(rpc_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
               "legendFormat": "{{job}}/{{method}} p95",
               "refId": "B"
             },
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "histogram_quantile(0.99, sum(rate(rpc_server_request_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
+              "expr": "histogram_quantile(0.99, sum(rate(rpc_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
               "legendFormat": "{{job}}/{{method}} p99",
               "refId": "C"
             }
@@ -134,7 +134,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "sum(rate(rpc_server_requests_total{job=~\"$service\", code!=\"OK\"}[5m])) by (job) / sum(rate(rpc_server_requests_total{job=~\"$service\"}[5m])) by (job)",
+              "expr": "sum(rate(rpc_server_requests_code_total{job=~\"$service\", code!=\"0\"}[5m])) by (job) / sum(rate(rpc_server_requests_code_total{job=~\"$service\"}[5m])) by (job)",
               "legendFormat": "{{job}}",
               "refId": "A"
             }

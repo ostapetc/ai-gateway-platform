@@ -46,7 +46,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "sum(rate(server_requests_code_total{job=~\"$service\"}[1m])) by (job)",
+              "expr": "sum(rate(http_server_requests_code_total{job=~\"$service\"}[1m])) by (job)",
               "legendFormat": "{{job}}",
               "refId": "A"
             }
@@ -71,13 +71,13 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "sum(rate(server_requests_code_total{job=~\"$service\", code=~\"5..\"}[1m])) by (job)",
+              "expr": "sum(rate(http_server_requests_code_total{job=~\"$service\", code=~\"5..\"}[1m])) by (job)",
               "legendFormat": "{{job}} 5xx",
               "refId": "A"
             },
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "sum(rate(server_requests_code_total{job=~\"$service\", code=~\"4..\"}[1m])) by (job)",
+              "expr": "sum(rate(http_server_requests_code_total{job=~\"$service\", code=~\"4..\"}[1m])) by (job)",
               "legendFormat": "{{job}} 4xx",
               "refId": "B"
             }
@@ -109,19 +109,19 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "histogram_quantile(0.50, sum(rate(server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
+              "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
               "legendFormat": "{{job}} p50",
               "refId": "A"
             },
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "histogram_quantile(0.95, sum(rate(server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
+              "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
               "legendFormat": "{{job}} p95",
               "refId": "B"
             },
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "histogram_quantile(0.99, sum(rate(server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
+              "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
               "legendFormat": "{{job}} p99",
               "refId": "C"
             }
@@ -146,7 +146,7 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "topk(10, histogram_quantile(0.99, sum(rate(server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, path)))",
+              "expr": "topk(10, histogram_quantile(0.99, sum(rate(http_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, path)))",
               "legendFormat": "{{job}} {{path}}",
               "refId": "A",
               "instant": true,
