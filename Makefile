@@ -126,8 +126,8 @@ k8s-delete: ## Delete all Kubernetes resources in the namespace
 	$(KUBECTL) delete namespace $(NAMESPACE) --ignore-not-found
 
 .PHONY: k8s-status
-k8s-status: ## Show pod and service status
-	$(KUBECTL) get pods,svc,ingress -n $(NAMESPACE)
+k8s-status: ## Show pod, service, ingress and cronjob status
+	$(KUBECTL) get pods,svc,ingress,cronjobs -n $(NAMESPACE)
 
 .PHONY: k8s-endpoints
 k8s-endpoints: ## Print all HTTP endpoints (k8s ingress)
