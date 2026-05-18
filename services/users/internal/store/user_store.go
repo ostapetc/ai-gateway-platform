@@ -45,6 +45,14 @@ func (s *UserStore) Get(id uint64) (types.User, bool) {
 	return types.User{}, false
 }
 
+func (s *UserStore) List() []types.User {
+	s.mu.RLock()
+	result := make([]types.User, len(s.users))
+	copy(result, s.users)
+	s.mu.RUnlock()
+	return result
+}
+
 func (s *UserStore) GetRandom() (types.User, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()

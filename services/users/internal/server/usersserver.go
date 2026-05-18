@@ -59,3 +59,21 @@ func (s *UsersServer) GetRandom(ctx context.Context, in *users.GetRandomRequest)
 		},
 	}, nil
 }
+
+func (s *UsersServer) List(ctx context.Context, in *users.ListRequest) (*users.ListResponse, error) {
+	l := logic.NewListUsersLogic(ctx, s.svcCtx)
+	resp, err := l.ListUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]*users.User, len(resp.Users))
+	for i, u := range resp.Users {
+		result[i] = &users.User{
+			Id:       u.ID,
+			Username: u.Username,
+			Email:    u.Email,
+		}
+	}
+	return &users.ListResponse{Users: result, Total: uint64(resp.Total)}, nil
+}

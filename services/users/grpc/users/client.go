@@ -11,6 +11,7 @@ type (
 		Create(ctx context.Context, in *CreateRequest) (*CreateResponse, error)
 		Get(ctx context.Context, in *GetRequest) (*GetResponse, error)
 		GetRandom(ctx context.Context, in *GetRandomRequest) (*GetRandomResponse, error)
+		List(ctx context.Context, in *ListRequest) (*ListResponse, error)
 	}
 
 	defaultClient struct {
@@ -32,4 +33,8 @@ func (m *defaultClient) Get(ctx context.Context, in *GetRequest) (*GetResponse, 
 
 func (m *defaultClient) GetRandom(ctx context.Context, in *GetRandomRequest) (*GetRandomResponse, error) {
 	return NewUsersClient(m.cli.Conn()).GetRandom(ctx, in)
+}
+
+func (m *defaultClient) List(ctx context.Context, in *ListRequest) (*ListResponse, error) {
+	return NewUsersClient(m.cli.Conn()).List(ctx, in)
 }

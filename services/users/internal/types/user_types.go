@@ -19,3 +19,8 @@ type CreateUserResponse struct {
 type GetRandomUserResponse struct {
 	User User `json:"user"`
 }
+
+type ListUsersResponse struct {
+	Users []User `json:"users"`
+	Total int    `json:"total"`
+}

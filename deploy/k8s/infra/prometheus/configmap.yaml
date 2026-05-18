@@ -18,6 +18,10 @@ data:
         static_configs:
           - targets: ['posts:8882']
 
+      - job_name: comments
+        static_configs:
+          - targets: ['comments:8884']
+
       - job_name: otelcol
         static_configs:
           - targets: ['otelcol:8889']

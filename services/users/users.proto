@@ -7,6 +7,7 @@ service Users {
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc Get(GetRequest) returns (GetResponse);
   rpc GetRandom(GetRandomRequest) returns (GetRandomResponse);
+  rpc List(ListRequest) returns (ListResponse);
 }
 
 message User {
@@ -39,4 +40,13 @@ message GetRandomRequest {
 
 message GetRandomResponse {
   User user = 1;
+}
+
+message ListRequest {
+
+}
+
+message ListResponse {
+  repeated User users = 1;
+  uint64 total = 2;
 }

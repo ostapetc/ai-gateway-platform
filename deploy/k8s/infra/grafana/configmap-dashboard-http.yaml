@@ -1,0 +1,164 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-http
+  namespace: ai-gateway
+data:
+  http-servers.json: |
+    {
+      "id": null,
+      "uid": "http-servers",
+      "title": "HTTP Servers",
+      "tags": ["http", "go-zero"],
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "30s",
+      "time": {"from": "now-1h", "to": "now"},
+      "templating": {
+        "list": [
+          {
+            "name": "service",
+            "type": "custom",
+            "label": "Service",
+            "multi": true,
+            "includeAll": true,
+            "allValue": "users|posts|comments",
+            "current": {"text": "All", "value": "$__all"},
+            "options": [
+              {"text": "All", "value": "$__all", "selected": true},
+              {"text": "users", "value": "users", "selected": false},
+              {"text": "posts", "value": "posts", "selected": false},
+              {"text": "comments", "value": "comments", "selected": false}
+            ],
+            "query": "users,posts,comments",
+            "hide": 0
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Request Rate (req/s)",
+          "type": "timeseries",
+          "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "prometheus"},
+              "expr": "sum(rate(server_requests_code_total{job=~\"$service\"}[1m])) by (job)",
+              "legendFormat": "{{job}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "custom": {"lineWidth": 1, "fillOpacity": 10}
+            }
+          },
+          "options": {
+            "legend": {"displayMode": "list", "placement": "bottom"},
+            "tooltip": {"mode": "multi"}
+          }
+        },
+        {
+          "id": 2,
+          "title": "Error Rate — 5xx (req/s)",
+          "type": "timeseries",
+          "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "prometheus"},
+              "expr": "sum(rate(server_requests_code_total{job=~\"$service\", code=~\"5..\"}[1m])) by (job)",
+              "legendFormat": "{{job}} 5xx",
+              "refId": "A"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "prometheus"},
+              "expr": "sum(rate(server_requests_code_total{job=~\"$service\", code=~\"4..\"}[1m])) by (job)",
+              "legendFormat": "{{job}} 4xx",
+              "refId": "B"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "custom": {"lineWidth": 1, "fillOpacity": 10},
+              "color": {"fixedColor": "red", "mode": "fixed"}
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byRegexp", "options": ".*4xx"},
+                "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}]
+              }
+            ]
+          },
+          "options": {
+            "legend": {"displayMode": "list", "placement": "bottom"},
+            "tooltip": {"mode": "multi"}
+          }
+        },
+        {
+          "id": 3,
+          "title": "Latency Percentiles (ms)",
+          "type": "timeseries",
+          "gridPos": {"x": 0, "y": 8, "w": 24, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "prometheus"},
+              "expr": "histogram_quantile(0.50, sum(rate(server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
+              "legendFormat": "{{job}} p50",
+              "refId": "A"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "prometheus"},
+              "expr": "histogram_quantile(0.95, sum(rate(server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
+              "legendFormat": "{{job}} p95",
+              "refId": "B"
+            },
+            {
+              "datasource": {"type": "prometheus", "uid": "prometheus"},
+              "expr": "histogram_quantile(0.99, sum(rate(server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job))",
+              "legendFormat": "{{job}} p99",
+              "refId": "C"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ms",
+              "custom": {"lineWidth": 1, "fillOpacity": 5}
+            }
+          },
+          "options": {
+            "legend": {"displayMode": "list", "placement": "bottom"},
+            "tooltip": {"mode": "multi"}
+          }
+        },
+        {
+          "id": 4,
+          "title": "Top Slowest Paths (p99, ms)",
+          "type": "table",
+          "gridPos": {"x": 0, "y": 16, "w": 24, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "datasource": {"type": "prometheus", "uid": "prometheus"},
+              "expr": "topk(10, histogram_quantile(0.99, sum(rate(server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, path)))",
+              "legendFormat": "{{job}} {{path}}",
+              "refId": "A",
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {"unit": "ms"}
+          },
+          "options": {
+            "sortBy": [{"displayName": "Value", "desc": true}]
+          }
+        }
+      ]
+    }

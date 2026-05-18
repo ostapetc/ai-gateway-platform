@@ -22,6 +22,7 @@ const (
 	Users_Create_FullMethodName    = "/users.Users/Create"
 	Users_Get_FullMethodName       = "/users.Users/Get"
 	Users_GetRandom_FullMethodName = "/users.Users/GetRandom"
+	Users_List_FullMethodName      = "/users.Users/List"
 )
 
 // UsersClient is the client API for Users service.
@@ -31,6 +32,7 @@ type UsersClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetRandom(ctx context.Context, in *GetRandomRequest, opts ...grpc.CallOption) (*GetRandomResponse, error)
+	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 }
 
 type usersClient struct {
@@ -71,6 +73,16 @@ func (c *usersClient) GetRandom(ctx context.Context, in *GetRandomRequest, opts 
 	return out, nil
 }
 
+func (c *usersClient) List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListResponse)
+	err := c.cc.Invoke(ctx, Users_List_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServer is the server API for Users service.
 // All implementations must embed UnimplementedUsersServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type UsersServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetRandom(context.Context, *GetRandomRequest) (*GetRandomResponse, error)
+	List(context.Context, *ListRequest) (*ListResponse, error)
 	mustEmbedUnimplementedUsersServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedUsersServer) Get(context.Context, *GetRequest) (*GetResponse,
 }
 func (UnimplementedUsersServer) GetRandom(context.Context, *GetRandomRequest) (*GetRandomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRandom not implemented")
+}
+func (UnimplementedUsersServer) List(context.Context, *ListRequest) (*ListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
 func (UnimplementedUsersServer) mustEmbedUnimplementedUsersServer() {}
 func (UnimplementedUsersServer) testEmbeddedByValue()               {}
@@ -172,6 +188,24 @@ func _Users_GetRandom_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).List(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_List_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).List(ctx, req.(*ListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Users_ServiceDesc is the grpc.ServiceDesc for Users service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var Users_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRandom",
 			Handler:    _Users_GetRandom_Handler,
+		},
+		{
+			MethodName: "List",
+			Handler:    _Users_List_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
