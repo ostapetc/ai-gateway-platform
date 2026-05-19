@@ -1,0 +1,157 @@
+{
+  "id": null,
+  "uid": "grpc-servers",
+  "title": "gRPC Servers",
+  "tags": ["grpc", "go-zero"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": {"from": "now-1h", "to": "now"},
+  "templating": {
+    "list": [
+      {
+        "name": "service",
+        "type": "custom",
+        "label": "Service",
+        "multi": true,
+        "includeAll": true,
+        "allValue": "users|posts|comments",
+        "current": {"text": "All", "value": "$__all"},
+        "options": [
+          {"text": "All", "value": "$__all", "selected": true},
+          {"text": "users", "value": "users", "selected": false},
+          {"text": "posts", "value": "posts", "selected": false},
+          {"text": "comments", "value": "comments", "selected": false}
+        ],
+        "query": "users,posts,comments",
+        "hide": 0
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "RPC Call Rate by Method (calls/s)",
+      "type": "timeseries",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum(rate(rpc_server_requests_code_total{job=~\"$service\"}[1m])) by (job, method)",
+          "legendFormat": "{{job}}/{{method}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {"lineWidth": 1, "fillOpacity": 10}
+        }
+      },
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom"},
+        "tooltip": {"mode": "multi"}
+      }
+    },
+    {
+      "id": 2,
+      "title": "RPC Error Rate (non-OK calls/s)",
+      "type": "timeseries",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum(rate(rpc_server_requests_code_total{job=~\"$service\", code!=\"0\"}[1m])) by (job, method, code)",
+          "legendFormat": "{{job}}/{{method}} {{code}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {"lineWidth": 1, "fillOpacity": 10},
+          "color": {"fixedColor": "red", "mode": "fixed"}
+        }
+      },
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom"},
+        "tooltip": {"mode": "multi"}
+      }
+    },
+    {
+      "id": 3,
+      "title": "RPC Latency Percentiles by Method (ms)",
+      "type": "timeseries",
+      "gridPos": {"x": 0, "y": 8, "w": 24, "h": 8},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "histogram_quantile(0.50, sum(rate(rpc_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
+          "legendFormat": "{{job}}/{{method}} p50",
+          "refId": "A"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "histogram_quantile(0.95, sum(rate(rpc_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
+          "legendFormat": "{{job}}/{{method}} p95",
+          "refId": "B"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "histogram_quantile(0.99, sum(rate(rpc_server_requests_duration_ms_bucket{job=~\"$service\"}[5m])) by (le, job, method))",
+          "legendFormat": "{{job}}/{{method}} p99",
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {"lineWidth": 1, "fillOpacity": 5}
+        }
+      },
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom"},
+        "tooltip": {"mode": "multi"}
+      }
+    },
+    {
+      "id": 4,
+      "title": "RPC Error Ratio (errors / total)",
+      "type": "timeseries",
+      "gridPos": {"x": 0, "y": 16, "w": 24, "h": 8},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum(rate(rpc_server_requests_code_total{job=~\"$service\", code!=\"0\"}[5m])) by (job) / sum(rate(rpc_server_requests_code_total{job=~\"$service\"}[5m])) by (job)",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "custom": {"lineWidth": 1, "fillOpacity": 10},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 0.01},
+              {"color": "red", "value": 0.05}
+            ]
+          }
+        }
+      },
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom"},
+        "tooltip": {"mode": "multi"}
+      }
+    }
+  ]
+}

@@ -1,4 +1,3 @@
-# Image: build with `docker build -t ghcr.io/ostapetc/ai-gateway-platform/comments:latest services/comments`
 apiVersion: apps/v1
 kind: Deployment
 metadata:

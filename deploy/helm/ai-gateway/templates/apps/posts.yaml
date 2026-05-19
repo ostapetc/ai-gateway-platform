@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: posts
+    {{- include "ai-gateway.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.apps.posts.replicas }}
+  selector:
+    matchLabels:
+      app: posts
+  template:
+    metadata:
+      labels:
+        app: posts
+    spec:
+      containers:
+        - name: posts
+          image: {{ .Values.registry }}/posts:{{ .Values.tag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.apps.posts.ports.http }}
+            - name: grpc
+              containerPort: {{ .Values.apps.posts.ports.grpc }}
+          env:
+            - name: ETCD_ADDRESS
+              value: "etcd.{{ .Release.Namespace }}:2379"
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.apps.posts.ports.http }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.apps.posts.ports.http }}
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.apps.posts.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: posts
+  ports:
+    - name: http
+      port: {{ .Values.apps.posts.ports.http }}
+      targetPort: {{ .Values.apps.posts.ports.http }}
+    - name: grpc
+      port: {{ .Values.apps.posts.ports.grpc }}
+      targetPort: {{ .Values.apps.posts.ports.grpc }}

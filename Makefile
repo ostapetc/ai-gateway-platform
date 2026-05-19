@@ -1,10 +1,13 @@
-COMPOSE    := docker compose -f deploy/local-dev/docker-compose.yml
-KUBECONFIG := $(HOME)/.kube/timeweb_config.yaml
-KUBECTL    := kubectl --kubeconfig $(KUBECONFIG)
-K8S_DIR    := deploy/k8s
-NAMESPACE  := ai-gateway
-REGISTRY   ?= freelikeatruth
-TAG        ?= $(shell git rev-parse --short HEAD)
+COMPOSE      := docker compose -f deploy/local-dev/docker-compose.yml
+KUBECONFIG   := $(HOME)/.kube/timeweb_config.yaml
+KUBECTL      := kubectl --kubeconfig $(KUBECONFIG)
+HELM         := helm --kubeconfig $(KUBECONFIG)
+K8S_DIR      := deploy/k8s
+HELM_CHART   := deploy/helm/ai-gateway
+HELM_RELEASE := ai-gateway
+NAMESPACE    := ai-gateway
+REGISTRY     ?= freelikeatruth
+TAG          ?= $(shell git rev-parse --short HEAD)
 
 # ── Dev environment ───────────────────────────────────────────────────────────
 
@@ -200,7 +203,38 @@ k8s-restart-infra: ## Rolling restart of infra pods (picks up ConfigMap changes)
 k8s-deploy: docker-push k8s-apply k8s-set-images k8s-rollout ## Build & push images, apply manifests, update to SHA tag, wait for rollout
 
 .PHONY: deploy
-deploy: docker-push k8s-set-images k8s-rollout ## Full deploy: build → push → update k8s → wait for rollout
+deploy: helm-deploy ## Full deploy: build → push → upgrade via Helm → wait for rollout
+
+# ── Helm ──────────────────────────────────────────────────────────────────────
+
+.PHONY: helm-install
+helm-install: ## Install or upgrade the Helm chart: make helm-install [REGISTRY=...] [TAG=...]
+	$(HELM) upgrade --install $(HELM_RELEASE) $(HELM_CHART) \
+		--namespace $(NAMESPACE) --create-namespace \
+		--set registry=$(REGISTRY) --set tag=$(TAG)
+
+.PHONY: helm-uninstall
+helm-uninstall: ## Uninstall the Helm release
+	$(HELM) uninstall $(HELM_RELEASE) --namespace $(NAMESPACE)
+
+.PHONY: helm-template
+helm-template: ## Render Helm templates to stdout: make helm-template [REGISTRY=...] [TAG=...]
+	$(HELM) template $(HELM_RELEASE) $(HELM_CHART) \
+		--namespace $(NAMESPACE) \
+		--set registry=$(REGISTRY) --set tag=$(TAG)
+
+.PHONY: helm-diff
+helm-diff: ## Show pending changes (requires helm-diff plugin): make helm-diff [REGISTRY=...] [TAG=...]
+	$(HELM) diff upgrade $(HELM_RELEASE) $(HELM_CHART) \
+		--namespace $(NAMESPACE) \
+		--set registry=$(REGISTRY) --set tag=$(TAG)
+
+.PHONY: helm-deploy
+helm-deploy: docker-push ## Build, push, and upgrade via Helm; waits for all pods to become ready
+	$(HELM) upgrade --install $(HELM_RELEASE) $(HELM_CHART) \
+		--namespace $(NAMESPACE) --create-namespace \
+		--set registry=$(REGISTRY) --set tag=$(TAG) \
+		--wait --timeout 5m
 
 # ── Help ──────────────────────────────────────────────────────────────────────
 

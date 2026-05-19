@@ -1,0 +1,26 @@
+{{- if .Values.cronjobs.comments.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: comments-bot-cronjob
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ai-gateway.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjobs.comments.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: comments-bot
+              image: {{ .Values.registry }}/comments-bot-cronjob:{{ .Values.tag }}
+              imagePullPolicy: {{ .Values.imagePullPolicy }}
+              args:
+                - createcomments
+              env:
+                - name: ETCD_ADDRESS
+                  value: "etcd.{{ .Release.Namespace }}:2379"
+          restartPolicy: OnFailure
+{{- end }}

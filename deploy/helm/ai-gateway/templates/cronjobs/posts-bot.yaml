@@ -1,0 +1,26 @@
+{{- if .Values.cronjobs.posts.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: posts-bot-cronjob
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ai-gateway.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjobs.posts.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: posts-bot
+              image: {{ .Values.registry }}/posts-bot-cronjob:{{ .Values.tag }}
+              imagePullPolicy: {{ .Values.imagePullPolicy }}
+              args:
+                - createposts
+              env:
+                - name: ETCD_ADDRESS
+                  value: "etcd.{{ .Release.Namespace }}:2379"
+          restartPolicy: OnFailure
+{{- end }}
