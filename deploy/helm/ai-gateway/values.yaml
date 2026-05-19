@@ -44,14 +44,20 @@ apps:
 
 cronjobs:
   users:
+    name: users-bot
     schedule: "* * * * *"
     enabled: true
+    args: createusers
   posts:
+    name: posts-bot
     schedule: "* * * * *"
     enabled: true
+    args: createposts
   comments:
+    name: comments-bot
     schedule: "* * * * *"
     enabled: true
+    args: createcomments
 
 infra:
   etcd:

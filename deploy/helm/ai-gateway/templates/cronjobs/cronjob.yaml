@@ -1,0 +1,29 @@
+{{- range $name, $cfg := .Values.cronjobs }}
+{{- if $cfg.enabled }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $cfg.name }}-cronjob
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "ai-gateway.labels" $ | nindent 4 }}
+spec:
+  schedule: {{ $cfg.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: {{ $cfg.name }}
+              image: {{ $.Values.registry }}/{{ $cfg.name }}-cronjob:{{ $.Values.tag }}
+              imagePullPolicy: {{ $.Values.imagePullPolicy }}
+              args:
+                - {{ $cfg.args }}
+              env:
+                - name: ETCD_ADDRESS
+                  value: "etcd.{{ $.Release.Namespace }}:2379"
+          restartPolicy: OnFailure
+{{- end }}
+{{- end }}
